@@ -1,19 +1,31 @@
+// -----------------------------------------------
+// background.js
+// -----------------------------------------------
+// the js running in the background
+// receive the document from the loadDocument.js and convert to DOM
+
 "use strict";
 
 window.onload = function() {
 	var parser = new DOMParser();
+
 	chrome.runtime.onMessage.addListener(
+
+		// ---------------------------------------
+		// Receive when the website is opened
+		// ---------------------------------------
 		function(request, sender, sendResponse) {
-		    if( request.message === "open_new_page" ) {
+		    if( request.from === 'content' && request.message === "open_new_page" ) {
 		      	console.log("I read");
-		      	console.log(request.div);
-		      	let doc = parser.parseFromString(request.div, "text/xml");
-				console.log(doc.firstChild);
-				//document.getElementById('url').innerHTML = message.innerHTML;
+		      	let doc = parser.parseFromString(request.document, "text/xml");
+				console.log(doc);
+				console.log(doc.body.children.length)
 		    } else if (request.message === 'test') {
 		    	console.log("I read " + request.value);
 		    }
-		 });
+		 }
+
+	);
 };
 
 // chrome.runtime.onMessage.addListener(function (msg, sender) {
