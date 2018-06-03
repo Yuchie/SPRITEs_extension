@@ -73,7 +73,16 @@
   // "homepage_url": "http://path/to/homepage",
   // "import": [{"id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}],
   // "incognito": "spanning, split, or not_allowed",
-  // "input_components": ...,
+  "input_components": [
+    {
+      "name": "SPRITEs get keyinput",
+      "type": "ime",
+      "id": "test",
+      "description": "Get key input",  // A user visible description
+      "language": "en-US",  // The primary language this IME is used for
+      "layouts": ["us::eng"]  // The supported keyboard layouts for this IME
+    }
+  ],
   // "key": "publicKey",
   // "minimum_chrome_version": "versionString",
   // "nacl_modules": [...],
