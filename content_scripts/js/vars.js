@@ -8,7 +8,10 @@
 
 var SP = {
 	Webparser: null,       // currently in webparser.js
-	Keymapping: null
+	Keymapping: null,
+	Keyboard: null,
+	Node: null,
+	Sound: null
 };
 
 class SPclass {
@@ -17,5 +20,8 @@ class SPclass {
 		this.pageDic = new Array();
 		// Array of navigation menu objects used for SPRITEs
 		this.menuDic = new Array();
+
+		// current node to read
+		this.currentNode = null;
 	}
 };

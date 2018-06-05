@@ -132,7 +132,7 @@ SP.Webparser = {
 		while (lists.length) {
 			let list = lists.shift();
 			let name = list.tagName.toLowerCase();
-			if(list.getAttribute('aria-hidden') != 'true') {  // TODO: how to skip the element
+			if(list.getAttribute('aria-hidden') != 'true' && list.style.display != "none") {  // TODO: how to skip the element
 				if(name.startsWith("h")) {
 					//if the element is header
 					pageDic_t[headerCount] = ['header', list];

@@ -4,15 +4,8 @@
 // Author: Yuqian Sun
 // Last Update: June 5th, 2018
 // the main js running in the background
-// receive the document from the loadDocument.js and convert to DOM
 
 "use strict";
-
-var SPdata = new SPclass();
-
-var spritesKeymap = {};
-var region_num = {};
-SP.Keymapping.initSpritesKeymapping();
 
 (function(){
 	window.onload = function() {

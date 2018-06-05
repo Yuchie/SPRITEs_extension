@@ -13,3 +13,9 @@
 	font-weight: bold;
 	text-align: center;
 }
+
+.sphighlight {
+	border-color: #FF0 !important;
+	color: #FF0 !important;
+	background-color: #000 !important;
+}

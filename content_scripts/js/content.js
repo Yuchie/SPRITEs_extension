@@ -8,26 +8,22 @@
 
 "use strict";
 
+var SPdata = new SPclass();
+
+var spritesKeymap = {};
+var region_num = {};
+SP.Keymapping.initSpritesKeymapping();
+
 (function() {
 	window.onload = function() {
 
-		loadDocument();
-	  	window.addEventListener('keydown', keySend);
-	  	// addTextContainer();
+		setSPdict();
+	  	window.addEventListener('keydown', readKeyInput);
+	  	addTextContainer();
 
 	  	chrome.runtime.onMessage.addListener(readMessage);
 
 	};
-
-	// -----------------------------------------------
-	// send the document dom to the background
-	// -----------------------------------------------
-	function loadDocument() {
-		var serializer = new XMLSerializer();
-	 	let wholeDocument = document;
-	  	let sendDocument = serializer.serializeToString(wholeDocument);
-	  	chrome.runtime.sendMessage({"message": "open_new_page", "from": "content", "value":sendDocument});
-	 }
 
 	// ---------------------------------------
 	// Read Message from background
@@ -44,6 +40,14 @@
 		}
 	}
 
+	// -----------------------------------------------
+	// set the SPdict in the SPdata from the DOM
+	// -----------------------------------------------
+	function setSPdict() {
+	 	let dom = document;
+	  	SP.Webparser.createDictFromSource(SPdata, dom);
+	 }
+
 	// ---------------------------------------
 	// Read the DOM
 	// ---------------------------------------
@@ -54,12 +58,23 @@
 	}
 
 	// -----------------------------------------------
-	// send key input to the background
+	// read key input and choose dict
 	// -----------------------------------------------
 	// this is event listener
-	function keySend(event) {
+	function readKeyInput(event) {
+		// TODO: sprites mode is on prevent default function
+		SP.Keyboard.suppressKey(event);
+
+		// get the keyinput data and convert to the sprites key mapping 
 		let code = event.code;
-		chrome.runtime.sendMessage({"message": "key_input", "from": "content", "value": code});
+		let spritesKey = SP.Keymapping.convertToKeyMap(code);
+		if(!spritesKey) {
+	      return false;
+	    } else {
+	      spritesKey = spritesKey.split(" ");
+	    }
+
+	    SP.Keyboard.keyPressed(spritesKey);
 	}
 
 	// -----------------------------------------------
@@ -70,6 +85,8 @@
 	function addTextContainer() {
 		let textContainer = document.createElement('div');
 		textContainer.setAttribute('id', 'sp_text_display_container');
+		// display none
+		textContainer.style.display = "none";
 
 		let text = document.createElement('span');
 		text.setAttribute('id', 'sp_text_display');
@@ -80,4 +97,5 @@
 		let bodyList = document.body;
 		bodyList.insertBefore(textContainer, bodyList.childNodes[0]);
 	}
+
 })();

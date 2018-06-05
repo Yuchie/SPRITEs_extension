@@ -16,9 +16,6 @@
   // "automation": ...,
   "background": {
     "scripts": [
-      "background/js/vars.js",
-      "background/js/webparser.js",
-      "background/js/keymapping.js",
       "background/js/background.js"
     ],
     "persistent": false
@@ -41,7 +38,15 @@
         "https://*/*"
       ],
       "css": ["content_scripts/css/content.css"],
-      "js": ["content_scripts/js/content.js"],
+      "js": [
+        "content_scripts/js/vars.js",
+        "content_scripts/js/webparser.js",
+        "content_scripts/js/keymapping.js",
+        "content_scripts/js/keyboard.js",
+        "content_scripts/js/node.js",
+        "content_scripts/js/sound.js",
+        "content_scripts/js/content.js"
+      ],
       "run_at":     "document_idle",
       "all_frames": false
     }
