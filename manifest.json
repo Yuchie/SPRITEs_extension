@@ -18,6 +18,7 @@
     "scripts": [
       "background/js/vars.js",
       "background/js/webparser.js",
+      "background/js/keymapping.js",
       "background/js/background.js"
     ],
     "persistent": false

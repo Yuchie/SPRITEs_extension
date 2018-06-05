@@ -7,7 +7,8 @@
 // Description: contains global namespace declarations
 
 var SP = {
-	Webparser: null       // currently in webparser.js
+	Webparser: null,       // currently in webparser.js
+	Keymapping: null
 };
 
 class SPclass {
