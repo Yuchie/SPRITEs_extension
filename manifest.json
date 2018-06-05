@@ -16,7 +16,9 @@
   // "automation": ...,
   "background": {
     "scripts": [
-      "js/background.js"
+      "js/background/vars.js",
+      "js/background/webparser.js",
+      "js/background/background.js"
     ],
     "persistent": false
   },

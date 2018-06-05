@@ -6,9 +6,10 @@
 
 "use strict";
 
+var SPdata = new SPclass();
+
 window.onload = function() {
 	chrome.runtime.onMessage.addListener(readMessage);
-	
 };
 
 
@@ -21,6 +22,7 @@ function readMessage(request, sender, sendResponse) {
 			// read the whole web document
 			case 'open_new_page':
 				let doc = readDom(request.value);
+				SP.Webparser.createDictFromSource(SPdata, doc);
 				break;
 			case 'key_input':
 				readKeyInput(request.value);
