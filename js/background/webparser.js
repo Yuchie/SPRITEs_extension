@@ -125,7 +125,7 @@ SP.Webparser = {
 	},
 
 	// create dict from the array of nodes
-	createDictFromList: function (lists) {
+	createDictFromList: function (lists, menu = null) {
 		// TODO: how to deal with input
 		let invalid_tags = ['b', 'i', 'u', 'a', 'div'];
 		pageDic_t = {};
@@ -134,7 +134,6 @@ SP.Webparser = {
 			let list = lists.shift();
 			let name = list.tagName.toLowerCase();
 			if(list.getAttribute('aria-hidden') != 'true') {  // TODO: how to skip the element
-				console.log(list);
 				if(name.startsWith("h")) {
 					//if the element is header
 					pageDic_t[headerCount] = ['header', list];
@@ -143,6 +142,14 @@ SP.Webparser = {
 					// if the element is list
 					pageDic_t[headerCount] = ['menubar', {}]
 					pageDic_t[headerCount][1] = SP.Webparser.createMenu(list);
+					// if the element before menubar is header in menuDic, regard this as a title
+					if(pageDic_t[headerCount-1][0] == 'header' && menu){
+						headerCount--;
+						let title = pageDic_t[headerCount][1].innerText;
+						pageDic_t[headerCount] = pageDic_t[headerCount+1];
+						pageDic_t[headerCount][1][0] = title;
+						delete pageDic_t[headerCount+1];
+					}
 					headerCount += 1;
 				} else if (name == "table"){
 					//if the element is table
@@ -162,59 +169,12 @@ SP.Webparser = {
 							lists = list_tmp.concat(lists);
 						} else {
 							let text = list.textContent;
-							if (text) {
-								pageDic_t[headerCount] = ['textblock', list.textContent];
+							if (text.trim()) {
+								pageDic_t[headerCount] = ['textblock', list]; // TODO: list.textContent or list?
 								headerCount += 1;
 							}
 						}
 					}
-				}
-			}
-		}
-		return pageDic_t;
-	},
-
-	// create menu dict from the array of nodes
-	createMenuDictFromList: function (lists) {
-		let invalid_tags = ['B', 'I', 'U', 'DIV'];
-		pageDic_t = {};
-		headerCount = 1;
-		while (lists.length) {
-			let list = lists.shift();
-			let name = list.tagName;
-			if(name.startsWith("H")) {
-				//if the element is header
-				pageDic_t[headerCount] = ['header', list];
-				// console.log('add header');
-				// console.log(list);
-				headerCount += 1;
-			} else if (name == "UL" || name == "OL"){
-				// if the element is list
-				pageDic_t[headerCount] = ['menubar', {}]
-				pageDic_t[headerCount][1] = SP.Webparser.createMenu(list);
-				if(pageDic_t[headerCount-1][0] == 'header'){
-					headerCount--;
-					let title = pageDic_t[headerCount][1].innerText;
-					pageDic_t[headerCount] = pageDic_t[headerCount+1];
-					pageDic_t[headerCount][1][0] = title;
-					pageDic_t[headerCount+1] = [];
-				}
-				headerCount += 1;
-			} else if (name == "TABLE"){
-				//if the element is table
-				pageDic_t[headerCount] = ['table', {}]
-				pageDic_t[headerCount][1] = SP.Webparser.createTable(list);
-				headerCount = headerCount + 1;
-			} else if (name == "P"){
-				if(list.innerHTML){
-					pageDic_t[headerCount] = ['paragraph', list];
-					headerCount += 1;
-				}
-			} else {
-				if (invalid_tags.indexOf(name)) {
-					let list_tmp = list.children;
-					list_tmp = Array.from(list_tmp);
-					lists = list_tmp.concat(lists);
 				}
 			}
 		}
@@ -232,7 +192,7 @@ SP.Webparser = {
 		lists = Array.from(lists);
 		data.pageDic = SP.Webparser.createDictFromList(lists);
 		menulists = Array.from(menulists);
-		data.menuDic = SP.Webparser.createMenuDictFromList(menulists);
+		data.menuDic = SP.Webparser.createDictFromList(menulists, 1);
 
 		// initialized previous dict
 		// pagescroll = [0, 0, 0, 0];
