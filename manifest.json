@@ -16,9 +16,9 @@
   // "automation": ...,
   "background": {
     "scripts": [
-      "js/background/vars.js",
-      "js/background/webparser.js",
-      "js/background/background.js"
+      "background/js/vars.js",
+      "background/js/webparser.js",
+      "background/js/background.js"
     ],
     "persistent": false
   },
@@ -39,8 +39,8 @@
         "http://*/*",
         "https://*/*"
       ],
-      //"css": ["css/sample.css"],
-      "js": ["js/content_scripts/loadDocument.js"],
+      "css": ["content_scripts/css/content.css"],
+      "js": ["content_scripts/js/content.js"],
       "run_at":     "document_idle",
       "all_frames": false
     }

@@ -1,0 +1,15 @@
+#sp_text_display_container {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	background-color: black;
+	display: block;
+}
+
+#sp_text_display {
+	width: 100%;
+	margin: 0;
+	padding: 0.1em;
+	font-size: 3em;
+	color: #FF0;
+	font-weight: bold;
+	text-align: center;
+}

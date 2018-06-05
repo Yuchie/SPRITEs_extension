@@ -1,10 +1,9 @@
 // -----------------------------------------------
 // webparser.js
 // -----------------------------------------------
-//
 // Author: Yuqian Sun
-// Last Update Date: June 4th, 2018
-// Description: used for change dom to dict table
+// Last Update: June 5th, 2018
+// Description: used for change dom to dict
 
 SP.Webparser = {
 
@@ -126,7 +125,7 @@ SP.Webparser = {
 
 	// create dict from the array of nodes
 	createDictFromList: function (lists, menu = null) {
-		// TODO: how to deal with input
+		// TODO: how to deal with input and button, form
 		let invalid_tags = ['b', 'i', 'u', 'a', 'div'];
 		pageDic_t = {};
 		headerCount = 1;
@@ -203,6 +202,6 @@ SP.Webparser = {
 		// activatedDic = null;
 		// spritesSubmode = null;
 
-		console.log("finished");
+		console.log("create dict finished");
 	}
 };
