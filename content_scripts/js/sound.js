@@ -7,6 +7,9 @@
 
 SP.Sound = {
 	narrate: function(narrateText) {
+		
+		console.log(narrateText);
+
 		window.speechSynthesis.cancel();  // Clear any existing speech utterance playing
 
 		// ** Temperory fix **

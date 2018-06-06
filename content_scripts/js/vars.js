@@ -23,5 +23,27 @@ class SPclass {
 
 		// current node to read
 		this.currentNode = null;
+
+		// -------------------------------------
+		// variable used in keyboard
+		// -------------------------------------
+		// keyboardMode:
+		// 0 - Browse Mode
+		// 1 - other Mode
+		this.keyboardMode = 0;
+
+		// dicMode:
+		// 1 - pageDic
+		// -1 - menuDic
+		this.dicMode = 0;
+
+		this.tableEdgeSearchMode = 0;
+		this.menubar = false;
+		this.table = false;
+		this.paragraph = false;
+		this.prevIndex = [0, 0, 0, 0];
+		this.activatedIndex = [0, 0, 0, 0];
+		this.pagescroll = [0, 0, 0, 0];
+		this.menuscroll = [0, 0, 0, 0];
 	}
 };

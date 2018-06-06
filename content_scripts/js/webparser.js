@@ -30,6 +30,10 @@ SP.Webparser = {
 
 					//acquire each tuple
 					for (let j=0; j<temps.length; j++) {
+						if(j == 0) {
+							dic[rowCount][0] = sublist;
+						}
+
 						temp = temps[j];
 
 						if(temp.tagName == "TH" || temp.tagName == "TD") {
@@ -126,7 +130,8 @@ SP.Webparser = {
 	// create dict from the array of nodes
 	createDictFromList: function (lists, menu = null) {
 		// TODO: how to deal with input and button, form
-		let invalid_tags = ['b', 'i', 'u', 'a', 'div'];
+		// link, the text in the div with other children node
+		let invalid_tags = ['b', 'i', 'u', 'div'];
 		pageDic_t = {};
 		headerCount = 1;
 		while (lists.length) {
@@ -139,25 +144,27 @@ SP.Webparser = {
 					headerCount += 1;
 				} else if (name == "ul" || name == "ol"){
 					// if the element is list
-					pageDic_t[headerCount] = ['menubar', {}]
-					pageDic_t[headerCount][1] = SP.Webparser.createMenu(list);
+					pageDic_t[headerCount] = ['menubar', list, {}]
+					pageDic_t[headerCount][2] = SP.Webparser.createMenu(list);
 					// if the element before menubar is header in menuDic, regard this as a title
 					if(pageDic_t[headerCount-1][0] == 'header' && menu){
 						headerCount--;
-						let title = pageDic_t[headerCount][1].innerText;
+						let title = pageDic_t[headerCount][1].textContent;
 						pageDic_t[headerCount] = pageDic_t[headerCount+1];
-						pageDic_t[headerCount][1][0] = title;
+						pageDic_t[headerCount][2][0] = title;
 						delete pageDic_t[headerCount+1];
 					}
 					headerCount += 1;
 				} else if (name == "table"){
 					//if the element is table
-					pageDic_t[headerCount] = ['table', {}]
-					pageDic_t[headerCount][1] = SP.Webparser.createTable(list);
+					pageDic_t[headerCount] = ['table', list, {}]
+					pageDic_t[headerCount][2] = SP.Webparser.createTable(list);
 					headerCount = headerCount + 1;
 				} else if (name == "p"){
-					if(list.innerHTML){
-						pageDic_t[headerCount] = ['paragraph', list];
+					if(list.textContent.trim()){
+						let link = Array.from(list.getElementsByTagName("a"));
+						link.unshift(null); // make it starts from 1
+						pageDic_t[headerCount] = ['paragraph', list, link];
 						headerCount += 1;
 					}
 				} else {
@@ -194,14 +201,13 @@ SP.Webparser = {
 		data.menuDic = SP.Webparser.createDictFromList(menulists, 1);
 
 		// initialized previous dict
-		// pagescroll = [0, 0, 0, 0];
-		// menuscroll = [0, 0, 0, 0];
-		// prevIndex = [];
 		// activatedIndex = [];
 		// prevDic = null;
 		// activatedDic = null;
-		// spritesSubmode = null;
 
 		console.log("create dict finished");
+		// used for check
+		// console.log(data.pageDic);
+		// console.log(data.menuDic);
 	}
 };

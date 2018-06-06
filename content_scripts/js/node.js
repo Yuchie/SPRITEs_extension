@@ -7,10 +7,15 @@
 
 SP.Node = {
 	// process the current node
-	processNode: function(nextNode) {
-		// TODO: add narrate
-		SP.Sound.narrate(nextNode.textContent);
-		this.highlightNode(nextNode);
+	processNode: function(nextNode, narrateText = null) {
+		if(nextNode) {
+			if(narrateText) {
+				SP.Sound.narrate(narrateText);
+			} else {
+				SP.Sound.narrate(nextNode.textContent);
+			}
+			this.highlightNode(nextNode);
+		}
 	},
 
 	// highlight the chosen node
@@ -23,7 +28,6 @@ SP.Node = {
 			currentNode.classList.remove('sphighlight');
 		}
 
-		console.log(nextNode);
 		// update the current node and highlight it
 		SPdata.currentNode = nextNode;
 	    SPdata.currentNode.focus();
