@@ -3,7 +3,7 @@
 // -----------------------------------------------
 //
 // Author: Yuqian Sun
-// Last Update Date: June 4th, 2018
+// Last Update Date: June 5th, 2018
 // Description: contains global namespace declarations
 
 var SP = {
@@ -37,10 +37,14 @@ class SPclass {
 		// -1 - menuDic
 		this.dicMode = 0;
 
+
+		// search table mode: search keyword in the table
 		this.tableEdgeSearchMode = 0;
+
 		this.menubar = false;
 		this.table = false;
 		this.paragraph = false;
+
 		this.prevIndex = [0, 0, 0, 0];
 		this.activatedIndex = [0, 0, 0, 0];
 		this.pagescroll = [0, 0, 0, 0];

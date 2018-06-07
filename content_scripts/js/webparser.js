@@ -2,7 +2,7 @@
 // webparser.js
 // -----------------------------------------------
 // Author: Yuqian Sun
-// Last Update: June 5th, 2018
+// Last Update: June 6th, 2018
 // Description: used for change dom to dict
 
 SP.Webparser = {
@@ -207,7 +207,7 @@ SP.Webparser = {
 
 		console.log("create dict finished");
 		// used for check
-		// console.log(data.pageDic);
+		console.log(data.pageDic);
 		// console.log(data.menuDic);
 	}
 };

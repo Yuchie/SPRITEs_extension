@@ -2,7 +2,7 @@
 // node.js
 // -----------------------------------------------
 // Author: Yuqian Sun
-// Last Update: June 5th, 2018
+// Last Update: June 6th, 2018
 // handle node
 
 SP.Node = {
