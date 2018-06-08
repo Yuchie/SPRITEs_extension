@@ -153,6 +153,8 @@ SP.Keyboard = {
 	    // ----------------------------------------
 	    // table mode
 	    // ----------------------------------------
+	    // TODO: caption for table
+	    // TODO: the link in tuple, list items
 	    if(SPdata.table) {
 	    	if(region == 0) {
 	    		let index = 0;

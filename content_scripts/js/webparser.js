@@ -205,7 +205,7 @@ SP.Webparser = {
 		// prevDic = null;
 		// activatedDic = null;
 
-		console.log("create dict finished");
+		SP.Sound.narrate("page loaded");
 		// used for check
 		// console.log(data.pageDic);
 		// console.log(data.menuDic);

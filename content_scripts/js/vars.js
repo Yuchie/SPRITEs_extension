@@ -16,6 +16,9 @@ var SP = {
 
 class SPclass {
 	constructor() {
+		// sprites mode is on or not
+		this.spritesMode = false;
+
 		// Array of Document objects used for SPRITEs
 		this.pageDic = new Array();
 		// Array of navigation menu objects used for SPRITEs

@@ -7,6 +7,8 @@
 
 "use strict";
 
+var SPbackgrounddata = new SPbackground();
+
 (function(){
 	window.onload = function() {
 		chrome.runtime.onMessage.addListener(readMessage);
@@ -19,13 +21,11 @@
 	function readMessage(request, sender, sendResponse) {
 		if(request.from === 'content') {
 			switch(request.message) {
-				// read the whole web document
-				case 'open_new_page':
-					readDom(request.value);
+				case 'checkSpritesMode':
+					sendSpritesMode();
 					break;
-				case 'key_input':
-					readKeyInput(request.value);
-					break;
+				case 'switchSpritesMode':
+					switchSpritesMode();
 				default:
 					console.log('unexpected message');
 					break;
@@ -34,44 +34,33 @@
 	}
 
 	// ---------------------------------------
-	// Read the document
+	// sendSpritesMode
 	// ---------------------------------------
-	function readDom(doc) {
-		let parser = new DOMParser();
-		let dom = parser.parseFromString(doc, "text/xml");
-
-		SP.Webparser.createDictFromSource(SPdata, dom);
-	}
-
-	// ---------------------------------------
-	// Read keyboard input
-	// ---------------------------------------
-	function readKeyInput(code) {
-		let spritesKey = SP.Keymapping.convertToKeyMap(code);
-		if(!spritesKey) {
-	      return false;
-	    } else {
-	      spritesKey = spritesKey.split(" ");
-	    }
-	    let ori_region = parseInt(spritesKey[0]);
-	    let region = ori_region;
-	    let Keynum = parseInt(spritesKey[1]);
-
-	    let sendNode = SPdata.pageDic[Keynum][1];
-	    sendNodeToBackground(sendNode);
-	}
-
-	// ---------------------------------------
-	// Send Node to the content
-	// ---------------------------------------
-	function sendNodeToBackground(node) {
-		var serializer = new XMLSerializer();
-	  	let sendDocument = serializer.serializeToString(node);
+	// send the current sprites mode to the content
+	function sendSpritesMode() {
+		let sendData = SPbackgrounddata.spritesMode;
 
 	  	chrome.tabs.query({active: true, currentWindow: true},
 			function(tabs) {
-				chrome.tabs.sendMessage( tabs[0].id, {"message": "node_to_read", "from": "background", "value":sendDocument}, function(response){} );
+				chrome.tabs.sendMessage(tabs[0].id, {"message": "spritesMode", "from": "background", "value":sendData}, function(response){} );
 			}
 		);
 	}
+
+	// ---------------------------------------
+	// switchSpritesMode
+	// ---------------------------------------
+	// switch the current sprites mode
+	function switchSpritesMode() {
+		let spritesMode = !SPbackgrounddata.spritesMode;
+		SPbackgrounddata.spritesMode = spritesMode;
+
+		chrome.tabs.query({active: true, currentWindow: true},
+			function(tabs) {
+				chrome.tabs.sendMessage(tabs[0].id, {"message": "switchSpritesModeFinished", "from": "background", "value":spritesMode}, function(response){} );
+			}
+		);
+
+	}
+
 })();
