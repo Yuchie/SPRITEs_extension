@@ -322,6 +322,26 @@ SP.Keyboard = {
 
 	},
 
+
+	// ----------------------------------------------------
+	// tableEdgeSearch function
+	// ----------------------------------------------------
+	// Search the table whether the specific tuple has the keyword.
+	// The result is stored in the searchResultRow and searchResultColumn.
+	tableEdgeSearch: function(table, keyword) {
+
+		for (let i=1; i<=Object.keys(table).length; i++) {
+			let subTable = table[i];
+			for (let j=1; j<=Object.keys(subTable).length; j++) {
+				if((subTable[j].innerText.toLowerCase()).match(keyword)) {
+					SPdata.searchResultRow.push(i);
+					SPdata.searchResultColumn.push(j);
+				}
+			}
+		}
+
+	},
+
 	suppressKey: function(event) {
 		if(event) {
 			event.preventDefault();

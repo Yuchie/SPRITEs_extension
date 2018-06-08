@@ -40,6 +40,8 @@ class SPclass {
 
 		// search table mode: search keyword in the table
 		this.tableEdgeSearchMode = 0;
+		this.searchResultRow = [];
+		this.searchResultColumn = [];
 
 		this.menubar = false;
 		this.table = false;
