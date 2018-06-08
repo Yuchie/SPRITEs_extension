@@ -207,7 +207,7 @@ SP.Webparser = {
 
 		console.log("create dict finished");
 		// used for check
-		console.log(data.pageDic);
+		// console.log(data.pageDic);
 		// console.log(data.menuDic);
 	}
 };

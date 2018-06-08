@@ -288,6 +288,10 @@ SP.Keyboard = {
 		    				narrateText = 'table activated';
 		    				// default row is 1
 		    				SPdata.activatedIndex[1] = 1;
+		    				// if tableSearchMode is on, then search the keyword of the activated table
+		    				if (SPdata.tableEdgeSearchMode && SPdata.trim() != "") {
+		    					this.tableEdgeSearch(nextNodeList[2], SPdata.keyword);
+		    				}
 		    			} else {
 			    			let row = Object.keys(nextNodeList[2]).length;
 			    			narrateText = 'table with ' + row + ' rows';
@@ -332,7 +336,8 @@ SP.Keyboard = {
 
 		for (let i=1; i<=Object.keys(table).length; i++) {
 			let subTable = table[i];
-			for (let j=1; j<=Object.keys(subTable).length; j++) {
+			// be careful the first tuple '0' is the parent dom
+			for (let j=1; j<=Object.keys(subTable).length-1; j++) {
 				if((subTable[j].innerText.toLowerCase()).match(keyword)) {
 					SPdata.searchResultRow.push(i);
 					SPdata.searchResultColumn.push(j);

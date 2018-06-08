@@ -42,6 +42,7 @@ class SPclass {
 		this.tableEdgeSearchMode = 0;
 		this.searchResultRow = [];
 		this.searchResultColumn = [];
+		this.keyword = ""; // this must be always stored in lower case
 
 		this.menubar = false;
 		this.table = false;
