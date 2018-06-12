@@ -2,7 +2,7 @@
 // content.js
 // -----------------------------------------------
 // Author: Yuqian Sun
-// Last Update: June 5th, 2018
+// Last Update: June 12th, 2018
 // manipulation of the currently opened website
 
 
@@ -22,32 +22,61 @@ SP.Keymapping.initSpritesKeymapping();
 		setSPdict();
 
 	  	chrome.runtime.onMessage.addListener(readMessage);
-	  	// check whether the sprites mode is on or not
-	  	chrome.runtime.sendMessage({"message": "checkSpritesMode", "from": "content"});
+	  	// initializa the valuables
+	  	chrome.runtime.sendMessage({"message": "initValuables", "from": "content"});
 
 	};
 
 	// ---------------------------------------
 	// Read Message from background
 	// ---------------------------------------
+	// TODO: communicate when the tab is refreshed or before refreshed?
 	function readMessage(request, sender, sendResponse) {
+		let narrateText = "";
+
 		if(request.from == 'background') {
 			switch(request.message) {
 				case 'spritesMode':
 					SPdata.spritesMode = request.value;
 					break;
+				case 'searchMode':
+					SPdata.searchMode = request.value;
+					SPdata.keyword = request.keyword;
+					break;
 				case 'switchSpritesModeFinished':
 					let resultMode = request.value;
 					SPdata.spritesMode = resultMode;
 					if(resultMode) {
-						SP.Sound.narrate("SPRITEs Mode ON");
+						narrateText = "SPRITEs Mode ON";
 					} else {
-						SP.Sound.narrate("SPRITEs Mode OFF");
+						narrateText = "SPRITEs Mode OFF";
 					}
+					SP.Sound.narrate(narrateText);
+					break;
+				case 'switchSearchModeFinished':
+					let resultSearchMode = request.value;
+					let searchWord = request.keyword;
+					SPdata.searchMode = resultSearchMode;
+					SPdata.keywordInputMode = resultSearchMode;
+					if(resultSearchMode) {
+						SPdata.keyword = searchWord;
+						narrateText = "Table Search Mode ON.";
+						if (searchWord.trim() != "") {
+							narrateText += ' ' + "Current keyword to search is " + searchWord;
+						}
+					} else {
+						// clear the search result
+						SPdata.searchResultDic = new Array();
+						narrateText = "Table Search Mode OFF";
+					}
+					SP.Sound.narrate(narrateText);
 					break;
 				default:
+					console.log("unexpected message sent to the content");
 					break;
 			}
+		} else {
+			console.log("message from unknown");
 		}
 	}
 
@@ -71,16 +100,29 @@ SP.Keymapping.initSpritesKeymapping();
 		if(SPdata.spritesMode) {
 			SP.Keyboard.suppressKey(e);
 
-			// get the keyinput data and convert to the sprites key mapping 
-			let code = e.code;
-			let spritesKey = SP.Keymapping.convertToKeyMap(code);
-			if(!spritesKey) {
-		      return false;
-		    } else {
-		      spritesKey = spritesKey.split(" ");
-		    }
+			if (SPdata.keywordInputMode) {
 
-		    SP.Keyboard.keyPressed(spritesKey);
+				// if the keyword input mode is on, then the key input is stored as a keyword
+				SP.Keyboard.keywordInput(e);
+
+			} else {
+
+				// get the keyinput data and convert to the sprites key mapping 
+				let code = e.code;
+				let spritesKey = SP.Keymapping.convertToKeyMap(code);
+				if(!spritesKey) {
+			      return false;
+			    } else {
+			      spritesKey = spritesKey.split(" ");
+			    }
+
+			    if (SPdata.searchMode) {
+			    	SP.Keyboard.keyPressedSearchMode(spritesKey);
+			    } else {
+			    	SP.Keyboard.keyPressed(spritesKey);
+			    }
+
+			}
 		}
 
 	}
@@ -97,7 +139,7 @@ SP.Keymapping.initSpritesKeymapping();
 				chrome.runtime.sendMessage({"message": "switchSpritesMode", "from": "content"});
 				break;
 			case 'ctrl f':
-				// TODO: spritesSearchMode
+				chrome.runtime.sendMessage({"message": "switchSearchMode", "from": "content"});
 				break;
 			default:
 				break;

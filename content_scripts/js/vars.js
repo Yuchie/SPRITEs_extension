@@ -3,15 +3,15 @@
 // -----------------------------------------------
 //
 // Author: Yuqian Sun
-// Last Update Date: June 5th, 2018
+// Last Update Date: June 12th, 2018
 // Description: contains global namespace declarations
 
 var SP = {
-	Webparser: null,       // currently in webparser.js
-	Keymapping: null,
-	Keyboard: null,
-	Node: null,
-	Sound: null
+	Webparser: null,       // in webparser.js
+	Keymapping: null,		// in keymapping.js
+	Keyboard: null,			// in keyboard.js
+	Node: null,				// in node.js
+	Sound: null				// in sound.js
 };
 
 class SPclass {
@@ -23,6 +23,9 @@ class SPclass {
 		this.pageDic = new Array();
 		// Array of navigation menu objects used for SPRITEs
 		this.menuDic = new Array();
+		// Array of search result
+		this.searchResultPageDic = new Array();
+		this.searchResultMenuDic = new Array();
 
 		// current node to read
 		this.currentNode = null;
@@ -41,10 +44,9 @@ class SPclass {
 		this.dicMode = 0;
 
 
-		// search table mode: search keyword in the table
-		this.tableEdgeSearchMode = 0;
-		this.searchResultRow = [];
-		this.searchResultColumn = [];
+		// search mode: search keyword
+		this.searchMode = false;
+		this.keywordInputMode = false;
 		this.keyword = ""; // this must be always stored in lower case
 
 		this.menubar = false;

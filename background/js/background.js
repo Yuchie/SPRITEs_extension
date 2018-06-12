@@ -2,7 +2,7 @@
 // background.js
 // -----------------------------------------------
 // Author: Yuqian Sun
-// Last Update: June 5th, 2018
+// Last Update: June 12th, 2018
 // the main js running in the background
 
 "use strict";
@@ -21,17 +21,28 @@ var SPbackgrounddata = new SPbackground();
 	function readMessage(request, sender, sendResponse) {
 		if(request.from === 'content') {
 			switch(request.message) {
+				case 'initValuables':
+					sendSpritesMode();
+					sendSearchMode();
+					break;
 				case 'checkSpritesMode':
 					sendSpritesMode();
 					break;
 				case 'switchSpritesMode':
 					switchSpritesMode();
+					break;
+				case 'switchSearchMode':
+					switchSearchMode();
+					break;
 				default:
-					console.log('unexpected message');
+					console.log('unexpected message sent to the background');
 					break;
 			}
+		} else {
+			console.log("message from unknown");
 		}
 	}
+
 
 	// ---------------------------------------
 	// sendSpritesMode
@@ -42,10 +53,26 @@ var SPbackgrounddata = new SPbackground();
 
 	  	chrome.tabs.query({active: true, currentWindow: true},
 			function(tabs) {
-				chrome.tabs.sendMessage(tabs[0].id, {"message": "spritesMode", "from": "background", "value":sendData}, function(response){} );
+				chrome.tabs.sendMessage(tabs[0].id, {"message": "spritesMode", "from": "background", "value": sendData}, function(response){} );
 			}
 		);
 	}
+
+
+	// ---------------------------------------
+	// sendSearchMode
+	// ---------------------------------------
+	// send the current search mode and searched keyword to the content
+	function sendSearchMode() {
+		let sendData = SPbackgrounddata.searchMode;
+		let sendData = SPbackgrounddata.keyword;
+		chrome.tabs.query({active: true, currentWindow: true},
+			function(tabs) {
+				chrome.tabs.sendMessage(tabs[0].id, {"message": "searchMode", "from": "background", "value": sendData, "keyword": keyword}, function(response){} );
+			}
+		);
+	}
+
 
 	// ---------------------------------------
 	// switchSpritesMode
@@ -57,7 +84,25 @@ var SPbackgrounddata = new SPbackground();
 
 		chrome.tabs.query({active: true, currentWindow: true},
 			function(tabs) {
-				chrome.tabs.sendMessage(tabs[0].id, {"message": "switchSpritesModeFinished", "from": "background", "value":spritesMode}, function(response){} );
+				chrome.tabs.sendMessage(tabs[0].id, {"message": "switchSpritesModeFinished", "from": "background", "value": spritesMode}, function(response){} );
+			}
+		);
+
+	}
+
+
+	// ---------------------------------------
+	// switchSearchMode
+	// ---------------------------------------
+	// switch the current search mode and send the keyword to search
+	function switchSearchMode() {
+		let spritesSearchMode = !SPbackgrounddata.searchMode;
+		SPbackgrounddata.searchMode = spritesSearchMode;
+		let keyword = SPbackgrounddata.keyword;
+
+		chrome.tabs.query({active: true, currentWindow: true},
+			function(tabs) {
+				chrome.tabs.sendMessage(tabs[0].id, {"message": "switchSearchModeFinished", "from": "background", "value": spritesSearchMode, "keyword": keyword}, function(response){} );
 			}
 		);
 

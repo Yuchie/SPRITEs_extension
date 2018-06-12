@@ -162,9 +162,9 @@ SP.Webparser = {
 					headerCount = headerCount + 1;
 				} else if (name == "p"){
 					if(list.textContent.trim()){
-						let link = Array.from(list.getElementsByTagName("a"));
-						link.unshift(null); // make it starts from 1
-						pageDic_t[headerCount] = ['paragraph', list, link];
+						let linkList = Array.from(list.getElementsByTagName("a"));
+						linkList.unshift(null); // make it starts from 1
+						pageDic_t[headerCount] = ['paragraph', list, linkList];
 						headerCount += 1;
 					}
 				} else {

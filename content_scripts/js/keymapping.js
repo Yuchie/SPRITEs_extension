@@ -5,6 +5,8 @@
 // Last Update: June 5th, 2018
 // convert the key input to the physical key mapping
 // temporary use
+// TODO: this should be in the background?
+// TODO: calibration
 
 SP.Keymapping = {
 
