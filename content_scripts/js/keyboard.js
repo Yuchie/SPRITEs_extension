@@ -378,7 +378,7 @@ SP.Keyboard = {
 	    let activated = false;
 
 	    // TODO: return the search result
-	    console.log(SPdata.searchResultDic);
+	    console.log(SPdata.searchResultPageDic);
 
 	},
 
@@ -423,6 +423,7 @@ SP.Keyboard = {
 		}
 
 		SP.Sound.narrate(narrateText);
+		chrome.runtime.sendMessage({"message": "storeKeyword", "from": "content", "keyword": keyword});
 
 	},
 
@@ -485,7 +486,7 @@ SP.Keyboard = {
 	// search function
 	// ----------------------------------------------------
 	// Search the whole dic whether it has the keyword
-	// The result is stored in the searchResultDic
+	// The result is returned
 	search: function(dic, keyword) {
 
 		let resultDic_t = {};
@@ -542,7 +543,6 @@ SP.Keyboard = {
 			}
 		}
 
-		console.log(resultDic_t);
 		return resultDic_t;
 
 	},

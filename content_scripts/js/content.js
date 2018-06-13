@@ -55,7 +55,7 @@ SP.Keymapping.initSpritesKeymapping();
 					break;
 				case 'switchSearchModeFinished':
 					let resultSearchMode = request.value;
-					let searchWord = request.keyword;
+					let searchWord = SPdata.keyword;
 					SPdata.searchMode = resultSearchMode;
 					SPdata.keywordInputMode = resultSearchMode;
 					if(resultSearchMode) {

@@ -34,6 +34,9 @@ var SPbackgrounddata = new SPbackground();
 				case 'switchSearchMode':
 					switchSearchMode();
 					break;
+				case 'storeKeyword':
+					SPbackgrounddata.keyword = request.keyword;
+					break;
 				default:
 					console.log('unexpected message sent to the background');
 					break;
@@ -65,7 +68,7 @@ var SPbackgrounddata = new SPbackground();
 	// send the current search mode and searched keyword to the content
 	function sendSearchMode() {
 		let sendData = SPbackgrounddata.searchMode;
-		let sendData = SPbackgrounddata.keyword;
+		let keyword = SPbackgrounddata.keyword;
 		chrome.tabs.query({active: true, currentWindow: true},
 			function(tabs) {
 				chrome.tabs.sendMessage(tabs[0].id, {"message": "searchMode", "from": "background", "value": sendData, "keyword": keyword}, function(response){} );
@@ -98,11 +101,10 @@ var SPbackgrounddata = new SPbackground();
 	function switchSearchMode() {
 		let spritesSearchMode = !SPbackgrounddata.searchMode;
 		SPbackgrounddata.searchMode = spritesSearchMode;
-		let keyword = SPbackgrounddata.keyword;
 
 		chrome.tabs.query({active: true, currentWindow: true},
 			function(tabs) {
-				chrome.tabs.sendMessage(tabs[0].id, {"message": "switchSearchModeFinished", "from": "background", "value": spritesSearchMode, "keyword": keyword}, function(response){} );
+				chrome.tabs.sendMessage(tabs[0].id, {"message": "switchSearchModeFinished", "from": "background", "value": spritesSearchMode}, function(response){} );
 			}
 		);
 
