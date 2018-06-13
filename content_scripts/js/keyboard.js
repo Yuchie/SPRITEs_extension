@@ -378,7 +378,7 @@ SP.Keyboard = {
 	    let activated = false;
 
 	    // TODO: return the search result
-	    console.log('explore search result dic!');
+	    console.log(SPdata.searchResultDic);
 
 	},
 
@@ -498,7 +498,7 @@ SP.Keyboard = {
 			let occurence = 0;
 			switch(name) {
 				case 'header':
-					occurence = (content.innerText.toLowerCase()).match(keyword);
+					occurence = ((content.innerText.toLowerCase()).match(new RegExp(keyword, 'gi')) || []).length;
 					if (occurence) {
 						resultDic_t[headerCount] = [i, occurence];
 						headerCount++;
@@ -519,18 +519,18 @@ SP.Keyboard = {
 					occurence = tableResult[0];
 					if (occurence) {
 						resultDic_t[headerCount] = [i, occurence, tableResultDic];
-						headeCount++;
+						headerCount++;
 					}
 					break;
 				case 'paragraph':
-					occurence = (content.innerText.toLowerCase()).match(keyword);
+					occurence = ((content.innerText.toLowerCase()).match(new RegExp(keyword, 'gi')) || []).length;
 					if (occurence) {
 						resultDic_t[headerCount] = [i, occurence];
 						headerCount++;
 					}
 					break;
 				case 'textblock':
-					occurence = (content.innerText.toLowerCase()).match(keyword);
+					occurence = ((content.innerText.toLowerCase()).match(new RegExp(keyword, 'gi')) || []).length;
 					if (occurence) {
 						resultDic_t[headerCount] = [i, occurence];
 						headerCount++;
@@ -542,6 +542,7 @@ SP.Keyboard = {
 			}
 		}
 
+		console.log(resultDic_t);
 		return resultDic_t;
 
 	},
