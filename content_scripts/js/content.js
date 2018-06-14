@@ -102,7 +102,9 @@ SP.Keymapping.initSpritesKeymapping();
 	function readKeyInput(e) {
 
 		// check whether the shortcut is pressed
-		checkShortcut(e);
+		if (checkShortcut(e)) {
+			return true;
+		}
 
 		if(SPdata.spritesMode) {
 			SP.Keyboard.suppressKey(e);
@@ -140,6 +142,8 @@ SP.Keymapping.initSpritesKeymapping();
 	// -----------------------------------------------
 	// check whether the shortcut is pressed and change the behavior
 	function checkShortcut(e) {
+
+		let shortcutPressed = true;
 		let keyString = getKeyString(e);
 		switch (keyString) {
 			case 'ctrl w':
@@ -151,8 +155,11 @@ SP.Keymapping.initSpritesKeymapping();
 				chrome.runtime.sendMessage({"message": "switchSearchMode", "from": "content"});
 				break;
 			default:
+				shortcutPressed = false;
 				break;
 		}
+
+		return shortcutPressed;
 
 	}
 

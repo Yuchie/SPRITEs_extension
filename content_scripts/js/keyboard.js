@@ -304,11 +304,6 @@ SP.Keyboard = {
 		    				narrateText = 'table activated';
 		    				// default row is 1
 		    				SPdata.activatedIndex[1] = 1;
-		    				// if tableSearchMode is on, then search the keyword of the activated table
-		    				// TODO: this is only for table search
-		    				if (SPdata.searchMode && SPdata.trim() != "") {
-		    					this.search(nextNodeList[2], SPdata.keyword);
-		    				}
 		    			} else {
 			    			let row = Object.keys(nextNodeList[2]).length;
 			    			narrateText = 'table with ' + row + ' rows';
@@ -359,29 +354,37 @@ SP.Keyboard = {
 	    	// if current dic is different from the previous dic, initializa the values
 	    	if(SPdata.dicMode != region) {
 	    		SPdata.dicMode = region;
-	    		SPdata.prevIndex = [0, 0, 0, 0];
 	    		SPdata.activatedIndex = [0, 0, 0, 0];
 	    		SPdata.menubar = false;
 	    		SPdata.table = false;
 	    		SPdata.paragraph = false;
+	    		if(region == -1) {
+	    			SPdata.prevMenuIndex = [0, 0, 0, 0];
+	    		} else if (region == 1) {
+	    			SPdata.prevPageIndex = [0, 0, 0, 0];
+	    		}
 	    	}
 	    }
 	    let curDic;
 	    let searchDic;
+	    let prevIndex;
 	    let curScroll;
 	    if(SPdata.dicMode == -1) {
 	    	curDic = SPdata.menuDic;
 	    	searchDic = SPdata.searchResultMenuDic;
+	    	prevIndex = SPdata.prevMenuIndex;
 	    	curScroll = SPdata.menuscroll;
 	    } else if(SPdata.dicMode == 1) {
 	    	curDic = SPdata.pageDic;
 	    	searchDic = SPdata.searchResultPageDic;
+	    	prevIndex = SPdata.prevPageIndex;
 	    	curScroll = SPdata.pagescroll;
 	    } else {
 	    	return false;
 	    }
 
 	    let narrateText = null;
+	    let searchResultList = null;
 	    let nextNodeList = null;
 	    let nextNode = null;
 	    let activated = false;
@@ -409,41 +412,114 @@ SP.Keyboard = {
 			        if (curScroll[0] >= 0) {
 			          	narrateText = "previous set of elements selected";
 			        } else {
-			          	narrateText = "This is the top";
+			          	narrateText = "This is the top of the search results";
 			          	curScroll[0] += 1;
 			        }
 	    		} else if(keyNum > region_num[region]) {
 	    			curScroll[0] += 1;
 	    			//check whether there's space remain in that level
-					if (curScroll[0] < Object.keys(curDic).length/region_num[region]) {
+					if (curScroll[0] < Object.keys(searchDic).length/region_num[region]) {
 						narrateText = "next set of elements selected";
 					} else {
-						narrateText = "This is the last";
+						narrateText = "This is the last of the search results";
 						curScroll[0] -= 1;
 					}
 
 	    		} else {
 	    			index = curScroll[0]*region_num[region]+keyNum;
-	    			if (SPdata.prevIndex[0] == index) {
+	    			if (prevIndex[0] == index) {
 	    				// if pressed the twice, the element is activated
 	    				SPdata.activatedIndex[0] = index;
 	    				activated = true;
 	    			}
-	    			nextNodeList = curDic[index];
-
-	    			if(!nextNodeList) {
+	    			searchResultList = searchDic[index];
+	    			if(!searchResultList) {
 	    				narrateText = "No element exists";
-	    			}
-	    		}
-	    		for(let i=0; i<SPdata.prevIndex.length; i++) {
-	    			if(i == 0) {
-	    				SPdata.prevIndex[i] = index;
 	    			} else {
-	    				SPdata.prevIndex[i] = 0;
+	    				nextNodeList = curDic[searchResultList[0]];
+	    			}
+
+	    		}
+	    		for(let i=0; i<prevIndex.length; i++) {
+	    			if(i == 0) {
+	    				prevIndex[i] = index;
+	    			} else {
+	    				prevIndex[i] = 0;
 	    			}
 	    		}
 	    	}
 	    }
+
+	    // update scroll number and prevIndex
+	    if(SPdata.dicMode == -1) {
+			SPdata.prevMenuIndex = prevIndex;
+	    	SPdata.menuscroll = curScroll;
+	    } else if(SPdata.dicMode == 1) {
+			SPdata.prevPageIndex = prevIndex;
+	    	SPdata.pagescroll = curScroll;
+	    }
+
+	    if(nextNodeList) {
+	    	if(nextNodeList.length > 1) {
+		    	switch(nextNodeList[0]){
+		    		case 'header':
+		    			nextNode = nextNodeList[1];
+			    		let headNum = nextNode.tagName[1];
+			    		narrateText = 'heading' + headNum + ' ' + nextNode.textContent;
+		    			break;
+		    		case 'menubar':
+		    			nextNode = nextNodeList[1];
+		    			if(activated) {
+		    				SPdata.menubar = true;
+		    				narrateText = 'menubar activated';
+		    			} else {
+			    			let length = Object.keys(nextNodeList[2]).length;
+			    			narrateText = 'menubar with ' + length + ' items';
+			    			if(nextNodeList[2][0]) {
+			    				let title = nextNodeList[2][0];
+			    				narrateText = title + ' ' + narrateText;
+			    			}
+			    		}
+		    			break;
+		    		case 'table':
+		    			nextNode = nextNodeList[1];
+		    			if(activated) {
+		    				SPdata.table = true;
+		    				narrateText = 'table activated';
+		    				// default row is 1
+		    				SPdata.activatedIndex[1] = 1;
+		    			} else {
+			    			let row = Object.keys(nextNodeList[2]).length;
+			    			narrateText = 'table with ' + row + ' rows';
+			    		}
+		    			break;
+		    		case 'paragraph':
+		    			nextNode = nextNodeList[1];
+		    			if(activated) {
+		    				SPdata.paragraph = true;
+		    				narrateText = 'paragraph activated';
+		    			}
+		    			break;
+		    		case 'textblock':
+		    			nextNode = nextNodeList[1];
+		    			break;
+		    		default:
+		    			console.log("unexpected web element in dic");
+		    			break;
+		    	}
+	    	} else {
+	    		nextNode = nextNodeList;
+	    	}
+	    }
+
+	    if(nextNode) {
+	    	SP.Node.processNode(nextNode, narrateText);
+	    } else if(narrateText) {
+    		SP.Sound.narrate(narrateText);
+    		return true;
+    	} else {
+    		return false;
+    	}
 
 	},
 
@@ -484,6 +560,12 @@ SP.Keyboard = {
 					let index;
 					SPdata.pagescroll = this.setScroll(SPdata.prevPageIndex[0], SPdata.searchResultPageDic, region_num[1]);
 					SPdata.menuscroll = this.setScroll(SPdata.prevMenuIndex[0], SPdata.searchResultMenuDic, region_num[-1]);
+
+					// initialize valuables
+					SPdata.activatedIndex = [0, 0, 0, 0];
+		    		SPdata.menubar = false;
+		    		SPdata.table = false;
+		    		SPdata.paragraph = false;
 				}
 				break;
 			default:
