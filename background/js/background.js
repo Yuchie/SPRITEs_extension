@@ -65,13 +65,12 @@ var SPbackgrounddata = new SPbackground();
 	// ---------------------------------------
 	// sendSearchMode
 	// ---------------------------------------
-	// send the current search mode and searched keyword to the content
+	// send searched keyword to the content
 	function sendSearchMode() {
-		let sendData = SPbackgrounddata.searchMode;
 		let keyword = SPbackgrounddata.keyword;
 		chrome.tabs.query({active: true, currentWindow: true},
 			function(tabs) {
-				chrome.tabs.sendMessage(tabs[0].id, {"message": "searchMode", "from": "background", "value": sendData, "keyword": keyword}, function(response){} );
+				chrome.tabs.sendMessage(tabs[0].id, {"message": "searchMode", "from": "background", "keyword": keyword}, function(response){} );
 			}
 		);
 	}

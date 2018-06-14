@@ -17,23 +17,30 @@ SP.Keyboard = {
 
 	    // switch between pageDic and menuDic
 	    if(region == -1 || region == 1) {
-	    	// if current dic is different from the previous dic, initializa the values
+	    	// if current dic is different from the previous dic, initialize the values
 	    	if(SPdata.dicMode != region) {
 	    		SPdata.dicMode = region;
-	    		SPdata.prevIndex = [0, 0, 0, 0];
 	    		SPdata.activatedIndex = [0, 0, 0, 0];
 	    		SPdata.menubar = false;
 	    		SPdata.table = false;
 	    		SPdata.paragraph = false;
+	    		if(region == -1) {
+	    			SPdata.prevMenuIndex = [0, 0, 0, 0];
+	    		} else if (region == 1) {
+	    			SPdata.prevPageIndex = [0, 0, 0, 0];
+	    		}
 	    	}
 	    }
 	    let curDic;
 	    let curScroll;
+	    let prevIndex;
 	    if(SPdata.dicMode == -1) {
 	    	curDic = SPdata.menuDic;
+	    	prevIndex = SPdata.prevMenuIndex;
 	    	curScroll = SPdata.menuscroll;
 	    } else if(SPdata.dicMode == 1) {
 	    	curDic = SPdata.pageDic;
+	    	prevIndex = SPdata.prevPageIndex;
 	    	curScroll = SPdata.pagescroll;
 	    } else {
 	    	return false;
@@ -82,7 +89,7 @@ SP.Keyboard = {
 
 	    		} else {
 	    			index = curScroll[0]*region_num[region]+keyNum;
-	    			if (SPdata.prevIndex[0] == index) {
+	    			if (prevIndex[0] == index) {
 	    				// if pressed the twice, the element is activated
 	    				SPdata.activatedIndex[0] = index;
 	    				activated = true;
@@ -93,11 +100,11 @@ SP.Keyboard = {
 	    				narrateText = "No element exists";
 	    			}
 	    		}
-	    		for(let i=0; i<SPdata.prevIndex.length; i++) {
+	    		for(let i=0; i<prevIndex.length; i++) {
 	    			if(i == 0) {
-	    				SPdata.prevIndex[i] = index;
+	    				prevIndex[i] = index;
 	    			} else {
-	    				SPdata.prevIndex[i] = 0;
+	    				prevIndex[i] = 0;
 	    			}
 	    		}
 	    	}
@@ -144,11 +151,11 @@ SP.Keyboard = {
 	    			}
 				}
 
-    			for(let i=0; i<SPdata.prevIndex.length; i++) {
+    			for(let i=0; i<prevIndex.length; i++) {
 	    			if(i == 1) {
-	    				SPdata.prevIndex[i] = index;
+	    				prevIndex[i] = index;
 	    			} else {
-	    				SPdata.prevIndex[i] = 0;
+	    				prevIndex[i] = 0;
 	    			}
 	    		}
 	    	}
@@ -189,7 +196,7 @@ SP.Keyboard = {
 				} else {
 					index = curScroll[1]*region_num[region]+keyNum;
 	    			nextNodeList = curDic[index][0];
-	    			if(SPdata.prevIndex[1] == index) {
+	    			if(prevIndex[1] == index) {
 	    				// if pressed the twice, the row is activated
 	    				SPdata.activatedIndex[1] = index;
 	    				activated = true;
@@ -204,11 +211,11 @@ SP.Keyboard = {
 	    			}
 				}
 
-				for(let i=0; i<SPdata.prevIndex.length; i++) {
+				for(let i=0; i<prevIndex.length; i++) {
 	    			if(i == 1) {
-	    				SPdata.prevIndex[i] = index;
+	    				prevIndex[i] = index;
 	    			} else {
-	    				SPdata.prevIndex[i] = 0;
+	    				prevIndex[i] = 0;
 	    			}
 	    		}
 	    	} else if(region == 2) {
@@ -248,21 +255,23 @@ SP.Keyboard = {
 		    		}
 				}
 
-				for(let i=0; i<SPdata.prevIndex.length; i++) {
+				for(let i=0; i<prevIndex.length; i++) {
 	    			if(i == 2) {
-	    				SPdata.prevIndex[i] = index;
+	    				prevIndex[i] = index;
 	    			} else {
-	    				SPdata.prevIndex[i] = 0;
+	    				prevIndex[i] = 0;
 	    			}
 	    		}
 	    	}
 	    }
 
 
-	    // update scroll number
+	    // update scroll number and prevIndex
 	    if(SPdata.dicMode == -1) {
+			SPdata.prevMenuIndex = prevIndex;
 	    	SPdata.menuscroll = curScroll;
 	    } else if(SPdata.dicMode == 1) {
+			SPdata.prevPageIndex = prevIndex;
 	    	SPdata.pagescroll = curScroll;
 	    }
 
@@ -377,8 +386,64 @@ SP.Keyboard = {
 	    let nextNode = null;
 	    let activated = false;
 
-	    // TODO: return the search result
-	    console.log(SPdata.searchResultPageDic);
+	    // --------------------------------------
+	    // Browsing Mode
+	    // --------------------------------------
+	    if(SPdata.keyboardMode == 0) {
+	    	if(region == -1 || region == 1) {
+	    		let index = 0;
+	    		// init all the mode and scroll used for other than browsing
+				SPdata.menubar = false;
+				SPdata.table = false;
+				SPdata.paragraph = false;
+				for (let i=1; i<SPdata.activatedIndex.length; i++) {
+					SPdata.activatedIndex[i] = 0;
+				}
+				for (let i=1; i<curScroll.length; i++) {
+					curScroll[i] = 0;
+				}
+
+	    		// first and last keyNum is used for scrolling
+	    		if(keyNum == 0) {
+	    			curScroll[0] -= 1;
+			        if (curScroll[0] >= 0) {
+			          	narrateText = "previous set of elements selected";
+			        } else {
+			          	narrateText = "This is the top";
+			          	curScroll[0] += 1;
+			        }
+	    		} else if(keyNum > region_num[region]) {
+	    			curScroll[0] += 1;
+	    			//check whether there's space remain in that level
+					if (curScroll[0] < Object.keys(curDic).length/region_num[region]) {
+						narrateText = "next set of elements selected";
+					} else {
+						narrateText = "This is the last";
+						curScroll[0] -= 1;
+					}
+
+	    		} else {
+	    			index = curScroll[0]*region_num[region]+keyNum;
+	    			if (SPdata.prevIndex[0] == index) {
+	    				// if pressed the twice, the element is activated
+	    				SPdata.activatedIndex[0] = index;
+	    				activated = true;
+	    			}
+	    			nextNodeList = curDic[index];
+
+	    			if(!nextNodeList) {
+	    				narrateText = "No element exists";
+	    			}
+	    		}
+	    		for(let i=0; i<SPdata.prevIndex.length; i++) {
+	    			if(i == 0) {
+	    				SPdata.prevIndex[i] = index;
+	    			} else {
+	    				SPdata.prevIndex[i] = 0;
+	    			}
+	    		}
+	    	}
+	    }
 
 	},
 
@@ -401,16 +466,25 @@ SP.Keyboard = {
 					narrateText = "search keyword is empty";
 				} else {
 					let key = keyword[keyword.length - 1];
-					SPdata.keyword = keyword.slice(0, -1); // TODO: delete the last char in the keyword
+					SPdata.keyword = keyword.slice(0, -1);
 					narrateText = "delete " + key;
 				}
 				break;
 			case 13:
 				// the input key is enter
-				SPdata.keywordInputMode = false;
-				narrateText = "Search " + keyword;
-				SPdata.searchResultPageDic = this.search(SPdata.pageDic, keyword);
-				SPdata.searchResultMenuDic = this.search(SPdata.menuDic, keyword);
+				if (keyword == "") {
+					narrateText = "Keyword is empty. Please type keyword to search";
+				} else {
+					SPdata.keywordInputMode = false;
+					narrateText = "Search " + keyword;
+					SPdata.searchResultPageDic = this.search(SPdata.pageDic, keyword);
+					SPdata.searchResultMenuDic = this.search(SPdata.menuDic, keyword);
+
+					// update scroll
+					let index;
+					SPdata.pagescroll = this.setScroll(SPdata.prevPageIndex[0], SPdata.searchResultPageDic, region_num[1]);
+					SPdata.menuscroll = this.setScroll(SPdata.prevMenuIndex[0], SPdata.searchResultMenuDic, region_num[-1]);
+				}
 				break;
 			default:
 				if(keyCode >= 48 && keyCode <= 90) {
@@ -424,6 +498,27 @@ SP.Keyboard = {
 
 		SP.Sound.narrate(narrateText);
 		chrome.runtime.sendMessage({"message": "storeKeyword", "from": "content", "keyword": keyword});
+
+	},
+
+
+
+	// ----------------------------------------------------
+	// setScroll function
+	// ----------------------------------------------------
+	// set the scroll to include the previndex
+	// return the scroll
+	setScroll: function(index, dic, regionNum) {
+
+		let scroll = [0, 0, 0, 0];
+		for (let i=1; i<=Object.keys(dic).length; i++) {
+			if (dic[i][0] >= index) {
+				scroll[0] = (i-1)/regionNum;
+				break;
+			}
+		}
+
+		return scroll;
 
 	},
 

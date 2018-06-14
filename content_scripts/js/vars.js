@@ -11,7 +11,7 @@ var SP = {
 	Keymapping: null,		// in keymapping.js
 	Keyboard: null,			// in keyboard.js
 	Node: null,				// in node.js
-	Sound: null				// in sound.js
+	Sound: null				// in sound.js 
 };
 
 class SPclass {
@@ -53,8 +53,9 @@ class SPclass {
 		this.table = false;
 		this.paragraph = false;
 
-		this.prevIndex = [0, 0, 0, 0];
 		this.activatedIndex = [0, 0, 0, 0];
+		this.prevPageIndex = [0, 0, 0, 0];
+		this.prevMenuIndex = [0, 0, 0, 0];
 		this.pagescroll = [0, 0, 0, 0];
 		this.menuscroll = [0, 0, 0, 0];
 	}

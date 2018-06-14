@@ -30,7 +30,6 @@ SP.Keymapping.initSpritesKeymapping();
 	// ---------------------------------------
 	// Read Message from background
 	// ---------------------------------------
-	// TODO: communicate when the tab is refreshed or before refreshed?
 	function readMessage(request, sender, sendResponse) {
 		let narrateText = "";
 
@@ -40,7 +39,6 @@ SP.Keymapping.initSpritesKeymapping();
 					SPdata.spritesMode = request.value;
 					break;
 				case 'searchMode':
-					SPdata.searchMode = request.value;
 					SPdata.keyword = request.keyword;
 					break;
 				case 'switchSpritesModeFinished':
@@ -68,6 +66,13 @@ SP.Keymapping.initSpritesKeymapping();
 						// clear the search result
 						SPdata.searchResultDic = new Array();
 						narrateText = "Table Search Mode OFF";
+						// set scroll
+						let scroll = [0, 0, 0, 0];
+						scroll[0] = (SPdata.prevPageIndex[0]-1)/region_num[1];
+						SPdata.pagescroll = scroll;
+						scroll = [0, 0, 0, 0];
+						scroll[0] = (SPdata.prevMenuIndex[0]-1)/region_num[-1];
+						SPdata.menuscroll = scroll;
 					}
 					SP.Sound.narrate(narrateText);
 					break;
@@ -80,6 +85,7 @@ SP.Keymapping.initSpritesKeymapping();
 		}
 	}
 
+
 	// -----------------------------------------------
 	// set the SPdict in the SPdata from the DOM
 	// -----------------------------------------------
@@ -87,6 +93,7 @@ SP.Keymapping.initSpritesKeymapping();
 	 	let dom = document;
 	  	SP.Webparser.createDictFromSource(SPdata, dom);
 	 }
+
 
 	// -----------------------------------------------
 	// read key input and choose dict
@@ -100,7 +107,7 @@ SP.Keymapping.initSpritesKeymapping();
 		if(SPdata.spritesMode) {
 			SP.Keyboard.suppressKey(e);
 
-			if (SPdata.keywordInputMode) {
+			if (SPdata.searchMode && SPdata.keywordInputMode) {
 
 				// if the keyword input mode is on, then the key input is stored as a keyword
 				SP.Keyboard.keywordInput(e);
@@ -136,9 +143,11 @@ SP.Keymapping.initSpritesKeymapping();
 		let keyString = getKeyString(e);
 		switch (keyString) {
 			case 'ctrl w':
+				SPdata.spritesMode = !SPdata.spritesMode;
 				chrome.runtime.sendMessage({"message": "switchSpritesMode", "from": "content"});
 				break;
 			case 'ctrl f':
+				SPdata.searchMode = !SPdata.searchMode;
 				chrome.runtime.sendMessage({"message": "switchSearchMode", "from": "content"});
 				break;
 			default:
@@ -212,6 +221,7 @@ SP.Keymapping.initSpritesKeymapping();
 
 		return key;
 	}
+
 
 	// -----------------------------------------------
 	// add text container to the website
