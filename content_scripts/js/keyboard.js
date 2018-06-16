@@ -277,14 +277,13 @@ SP.Keyboard = {
 
 	    if(nextNodeList) {
 	    	if(nextNodeList.length > 1) {
+	    		nextNode = nextNodeList[1];
 		    	switch(nextNodeList[0]){
 		    		case 'header':
-		    			nextNode = nextNodeList[1];
 			    		let headNum = nextNode.tagName[1];
 			    		narrateText = 'heading' + headNum + ' ' + nextNode.textContent;
 		    			break;
 		    		case 'menubar':
-		    			nextNode = nextNodeList[1];
 		    			if(activated) {
 		    				SPdata.menubar = true;
 		    				narrateText = 'menubar activated';
@@ -298,7 +297,6 @@ SP.Keyboard = {
 			    		}
 		    			break;
 		    		case 'table':
-		    			nextNode = nextNodeList[1];
 		    			if(activated) {
 		    				SPdata.table = true;
 		    				narrateText = 'table activated';
@@ -310,14 +308,12 @@ SP.Keyboard = {
 			    		}
 		    			break;
 		    		case 'paragraph':
-		    			nextNode = nextNodeList[1];
 		    			if(activated) {
 		    				SPdata.paragraph = true;
 		    				narrateText = 'paragraph activated';
 		    			}
 		    			break;
 		    		case 'textblock':
-		    			nextNode = nextNodeList[1];
 		    			break;
 		    		default:
 		    			console.log("unexpected web element in dic");
@@ -461,52 +457,37 @@ SP.Keyboard = {
 
 	    if(nextNodeList) {
 	    	if(nextNodeList.length > 1) {
-		    	switch(nextNodeList[0]){
-		    		case 'header':
-		    			nextNode = nextNodeList[1];
-			    		let headNum = nextNode.tagName[1];
-			    		narrateText = 'heading' + headNum + ' ' + nextNode.textContent;
-		    			break;
-		    		case 'menubar':
-		    			nextNode = nextNodeList[1];
-		    			if(activated) {
+	    		nextNode = nextNodeList[1];
+	    		if (activated) {
+			    	switch(nextNodeList[0]){
+			    		case 'header':
+				    		let headNum = nextNode.tagName[1];
+				    		narrateText = 'heading' + headNum + ' ' + nextNode.textContent;
+			    			break;
+			    		case 'menubar':
 		    				SPdata.menubar = true;
-		    				narrateText = 'menubar activated';
-		    			} else {
-			    			let length = Object.keys(nextNodeList[2]).length;
-			    			narrateText = 'menubar with ' + length + ' items';
-			    			if(nextNodeList[2][0]) {
-			    				let title = nextNodeList[2][0];
-			    				narrateText = title + ' ' + narrateText;
-			    			}
-			    		}
-		    			break;
-		    		case 'table':
-		    			nextNode = nextNodeList[1];
-		    			if(activated) {
+		    				let length = Object.keys(nextNodeList[2]).length;
+		    				narrateText = 'menubar with ' + length + ' items activated';
+			    			break;
+			    		case 'table':
 		    				SPdata.table = true;
-		    				narrateText = 'table activated';
+		    				let row = Object.keys(nextNodeList[2]).length;
+		    				narrateText = 'table with ' + row + ' rows activated';
 		    				// default row is 1
 		    				SPdata.activatedIndex[1] = 1;
-		    			} else {
-			    			let row = Object.keys(nextNodeList[2]).length;
-			    			narrateText = 'table with ' + row + ' rows';
-			    		}
-		    			break;
-		    		case 'paragraph':
-		    			nextNode = nextNodeList[1];
-		    			if(activated) {
-		    				SPdata.paragraph = true;
-		    				narrateText = 'paragraph activated';
-		    			}
-		    			break;
-		    		case 'textblock':
-		    			nextNode = nextNodeList[1];
-		    			break;
-		    		default:
-		    			console.log("unexpected web element in dic");
-		    			break;
-		    	}
+			    			break;
+			    		case 'paragraph':
+			    			break;
+			    		case 'textblock':
+			    			break;
+			    		default:
+			    			console.log("unexpected web element in dic");
+			    			break;
+			    	}
+			    } else {
+			    	// narrate the occurence
+			    	narrateText = searchResultList[1] + ' occurence in this ' + nextNodeList[0];
+			    }
 	    	} else {
 	    		nextNode = nextNodeList;
 	    	}
