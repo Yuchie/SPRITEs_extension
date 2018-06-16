@@ -446,6 +446,9 @@ SP.Keyboard = {
 	    	}
 	    }
 
+
+
+
 	    // update scroll number and prevIndex
 	    if(SPdata.dicMode == -1) {
 			SPdata.prevMenuIndex = prevIndex;
@@ -468,6 +471,10 @@ SP.Keyboard = {
 		    				SPdata.menubar = true;
 		    				let length = Object.keys(nextNodeList[2]).length;
 		    				narrateText = 'menubar with ' + length + ' items activated';
+		    				if(nextNodeList[2][0]) {
+			    				let title = nextNodeList[2][0];
+			    				narrateText = title + ' ' + narrateText;
+			    			}
 			    			break;
 			    		case 'table':
 		    				SPdata.table = true;
@@ -596,10 +603,18 @@ SP.Keyboard = {
 		let occurence = 0;
 		let searchResultIndex = [];
 
-		for (let i=1; i<=Object.keys(menubar); i++) {
-			if((menubar[i].innerText.toLowerCase()).match(keyword)) {
-				occurence++;
-				searchResultIndex.push(i);
+		for (let i=0; i<=Object.keys(menubar).length; i++) {
+			if(menubar[i]) {
+				let text;
+				if (i == 0) {
+					text = menubar[i];
+				} else {
+					text = menubar[i].textContent;
+				}
+				if((text.toLowerCase()).match(keyword)) {
+					occurence++;
+					searchResultIndex.push(i);
+				}
 			}
 		}
 
@@ -624,7 +639,7 @@ SP.Keyboard = {
 			let subTable = table[i];
 			// be careful the first tuple '0' is the parent dom
 			for (let j=1; j<=Object.keys(subTable).length-1; j++) {
-				if((subTable[j].innerText.toLowerCase()).match(keyword)) {
+				if((subTable[j].textContent.toLowerCase()).match(keyword)) {
 					occurence++;
 					searchResultRow.push(i);
 					searchResultColumn.push(j);
