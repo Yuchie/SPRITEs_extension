@@ -2,7 +2,7 @@
 // keyboard.js
 // -----------------------------------------------
 // Author: Yuqian Sun
-// Last Update: June 12th, 2018
+// Last Update: June 17th, 2018
 // handle keyInput
 
 SP.Keyboard = {
@@ -447,6 +447,65 @@ SP.Keyboard = {
 	    }
 
 
+	    // ----------------------------------------
+	    // menubar mode
+	    // ----------------------------------------
+	    if(SPdata.menubar) {
+	    	if(region == 2) {
+	    		let index = 0;
+
+	    		// update the curDic to the current menubar
+	    		// TODO: what if the region is more than 3, so menubar has menubar inside
+	    		// the case the list is link. How to click link?
+	    		curDic = curDic[searchDic[SPdata.activatedIndex[0]][0]][2];
+	    		searchDic = searchDic[SPdata.activatedIndex[0]][2];
+
+	    		// first and last keyNum is used for scrolling
+	    		if(keyNum == 0) {
+	    			curScroll[1] -= 1;
+			        if (curScroll[1] >= 0) {
+			          	narrateText = "previous set of elements selected";
+			        } else {
+			          	narrateText = "This is the top";
+			          	curScroll[1] += 1;
+			        }
+	    		} else if(keyNum > region_num[region]) {
+	    			curScroll[1] += 1;
+	    			//check whether there's space remain in that level
+					if (curScroll[1] < Object.keys(curDic).length/region_num[region]) {
+						narrateText = "next set of elements selected";
+					} else {
+						narrateText = "This is the last";
+						curScroll[1] -= 1;
+					}
+
+				} else {
+					index = curScroll[1]*region_num[region]+keyNum;
+	    			nextNodeList = curDic[index];
+	    			index = curScroll[0]*region_num[region]+keyNum;
+	    			if (prevIndex[1] == index) {
+	    				// if pressed the twice, the element is activated
+	    				SPdata.activatedIndex[1] = index;
+	    				activated = true;
+	    			} else {
+	    				let occurence = searchDic[index];
+	    				narrateText = occurence + " occurence in this item " + index;
+	    			}
+
+	    			if(!nextNodeList) {
+	    				narrateText = "No element exists";
+	    			}
+				}
+
+    			for(let i=0; i<prevIndex.length; i++) {
+	    			if(i == 1) {
+	    				prevIndex[i] = index;
+	    			} else {
+	    				prevIndex[i] = 0;
+	    			}
+	    		}
+	    	}
+	    }
 
 
 	    // update scroll number and prevIndex
@@ -549,11 +608,6 @@ SP.Keyboard = {
 					SPdata.pagescroll = this.setScroll(SPdata.prevPageIndex[0], SPdata.searchResultPageDic, region_num[1]);
 					SPdata.menuscroll = this.setScroll(SPdata.prevMenuIndex[0], SPdata.searchResultMenuDic, region_num[-1]);
 
-					// initialize valuables
-					SPdata.activatedIndex = [0, 0, 0, 0];
-		    		SPdata.menubar = false;
-		    		SPdata.table = false;
-		    		SPdata.paragraph = false;
 				}
 				break;
 			default:
@@ -600,9 +654,10 @@ SP.Keyboard = {
 	// The occurence and the array of index is returned
 	menuSearch: function(menubar, keyword) {
 
-		let occurence = 0;
-		let searchResultIndex = [];
+		let totalOccurence = 0;
+		let searchResultIndex = {};
 
+		// TODO: whether include title or not
 		for (let i=0; i<=Object.keys(menubar).length; i++) {
 			if(menubar[i]) {
 				let text;
@@ -611,14 +666,13 @@ SP.Keyboard = {
 				} else {
 					text = menubar[i].textContent;
 				}
-				if((text.toLowerCase()).match(keyword)) {
-					occurence++;
-					searchResultIndex.push(i);
-				}
+				let occurence = ((text.toLowerCase()).match(new RegExp(keyword, 'gi')) || []).length;
+				searchResultIndex[i] = occurence;
+				totalOccurence += occurence;
 			}
 		}
 
-		return [occurence, searchResultIndex];
+		return [totalOccurence, searchResultIndex];
 
 	},
 
@@ -680,10 +734,10 @@ SP.Keyboard = {
 					break;
 				case 'menubar':
 					let menuResult = this.menuSearch(subDic[2], keyword);
-					let menuResultArray = menuResult[1];
+					let menuResultDic = menuResult[1];
 					occurence = menuResult[0];
 					if (occurence) {
-						resultDic_t[headerCount] = [i, occurence, menuResultArray];
+						resultDic_t[headerCount] = [i, occurence, menuResultDic];
 						headerCount++;
 					}
 					break;
