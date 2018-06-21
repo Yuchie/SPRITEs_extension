@@ -543,29 +543,31 @@ SP.Keyboard = {
 				} else {
 					index = curScroll[1]*region_num[region]+keyNum;
 	    			nextNodeList = curDic[index][0];
-	    			if(prevIndex[1] == index) {
-	    				// if pressed the twice, the row is activated
-	    				SPdata.activatedIndex[1] = index;
-	    				activated = true;
-	    				narrateText = "row " + index + " activated";
-	    			} else {
-	    				// let column = Object.keys(curDic[index]).length - 1;
-	    				// narrateText = "row " + index + " with " + column + " columns";
-	    				let returnValue = this.searchNum(index, searchDic['row']);
-	    				let occurence = returnValue[0];
-	    				let indexFound = returnValue[1];
-	    				narrateText = occurence + " occurence in this row " + index + ". ";
-	    				if (indexFound.length) {
-	    					narrateText += SPdata.keyword + " is found in column ";
-	    					for (let i=0; i<indexFound.length; i++) {
-	    						narrateText += searchDic['column'][indexFound[i]] + ' ';
-	    					}
-	    				}
-	    			}
+	    			if (nextNodeList) {
+		    			if(prevIndex[1] == index) {
+		    				// if pressed the twice, the row is activated
+		    				let column = Object.keys(curDic[index]).length - 1;
+		    				SPdata.activatedIndex[1] = index;
+		    				activated = true;
+		    				narrateText = "row " + index + " with " + column + " column is activated";
+		    			} else {
+		    				// let column = Object.keys(curDic[index]).length - 1;
+		    				// narrateText = "row " + index + " with " + column + " columns";
+		    				let returnValue = this.searchNum(index, searchDic['row']);
+		    				let occurence = returnValue[0];
+		    				let indexFound = returnValue[1];
+		    				narrateText = occurence + " occurence in this row " + index + ". ";
+		    				if (indexFound.length) {
+		    					narrateText += SPdata.keyword + " is found in column ";
+		    					for (let i=0; i<indexFound.length; i++) {
+		    						narrateText += searchDic['column'][indexFound[i]] + ' ';
+		    					}
+		    				}
+		    			}
+		    		} else {
+		    			narrateText = "No row exists";
+		    		}
 
-	    			if(!nextNodeList) {
-	    				narrateText = "No row exists";
-	    			}
 				}
 
 				for(let i=0; i<prevIndex.length; i++) {
@@ -580,7 +582,8 @@ SP.Keyboard = {
 	    		let index = 0;
 
 	    		// update the curDic to the current menubar
-	    		curDic = curDic[SPdata.activatedIndex[0]][2][SPdata.activatedIndex[1]];
+	    		curDic = curDic[searchDic[SPdata.activatedIndex[0]][0]][2][SPdata.activatedIndex[1]];
+	    		searchDic = searchDic[SPdata.activatedIndex[0]][2];
 
 	    		// first and last keyNum is used for scrolling
 	    		if(keyNum == 0) {
@@ -605,11 +608,39 @@ SP.Keyboard = {
 					index = curScroll[2]*region_num[region]+keyNum;
 	    			nextNodeList = curDic[index];
 	    			if(nextNodeList) {
-		    			let row = SPdata.activatedIndex[1];
-		    			narrateText = "row " + row + " column " + index + " " + nextNodeList.textContent;
+		
+						let row = SPdata.activatedIndex[1];
+		    			if(prevIndex[2] == index) {
+		    				// if pressed the twice, the tuple is activated
+		    				SPdata.activatedIndex[2] = index;
+		    				activated = true;
+		    				narrateText = "row " + row + " column " + index + " " + nextNodeList.textContent;
+		    			} else {
+		    				// let column = Object.keys(curDic[index]).length - 1;
+		    				// narrateText = "row " + index + " with " + column + " columns";
+		    				let returnValue = this.searchNum(index, searchDic['column']);
+		    				let occurence = returnValue[0];
+		    				let indexFound = returnValue[1];
+		    				narrateText = "";
+		    				let foundRowText = "";
+		    				if (indexFound.length) {
+		    					foundRowText += SPdata.keyword + " is found in row ";
+		    					for (let i=0; i<indexFound.length; i++) {
+		    						let foundRow = searchDic['row'][indexFound[i]];
+		    						if(foundRow == row) {
+		    							narrateText += "Found keyword " + SPdata.keyword + " at row " + row + " column " + index + ". ";
+		    						}
+		    						foundRowText += searchDic['row'][indexFound[i]] + ' ';
+		    					}
+		    				}
+		    				narrateText += occurence + " occurence in this column " + index + ". ";
+		    				narrateText += foundRowText;
+		    			}
+
 		    		} else {
 		    			narrateText = "no column exits";
 		    		}
+
 				}
 
 				for(let i=0; i<prevIndex.length; i++) {
