@@ -17,7 +17,8 @@ SP.Keymapping.initSpritesKeymapping();
 (function() {
 	window.onload = function() {
 
-		window.addEventListener('keydown', readKeyInput);
+		window.addEventListener('keydown', handleKeyDown);
+		window.addEventListener('keyup', handleKeyReleased);
 	  	addTextContainer();
 		setSPdict();
 
@@ -99,10 +100,8 @@ SP.Keymapping.initSpritesKeymapping();
 	// read key input and choose dict
 	// -----------------------------------------------
 	// this is event listener for key input
-	function readKeyInput(e) {
+	function readKeyInput(e, keyString) {
 
-		// get key string
-		let keyString = getKeyString(e);
 		// check whether the shortcut is pressed
 		if (checkShortcut(keyString)) {
 			return true;
@@ -111,31 +110,30 @@ SP.Keymapping.initSpritesKeymapping();
 		if(SPdata.spritesMode) {
 			SP.Keyboard.suppressKey(e);
 
-			if(keyString != "") {
-				if (SPdata.searchMode && SPdata.keywordInputMode) {
+			if (SPdata.searchMode && SPdata.keywordInputMode) {
 
-					// if the keyword input mode is on, then the key input is stored as a keyword
-					SP.Keyboard.keywordInput(code);
+				// if the keyword input mode is on, then the key input is stored as a keyword
+				SP.Keyboard.keywordInput(code);
 
-				} else {
+			} else {
 
-					// get the keyinput data and convert to the sprites key mapping 
-					let code = e.code;
-					let spritesKey = SP.Keymapping.convertToKeyMap(code);
-					if(!spritesKey) {
-				      return false;
-				    } else {
-				      spritesKey = spritesKey.split(" ");
-				    }
+				// get the keyinput data and convert to the sprites key mapping 
+				let code = e.code;
+				let spritesKey = SP.Keymapping.convertToKeyMap(code);
+				if(!spritesKey) {
+			      return false;
+			    } else {
+			      spritesKey = spritesKey.split(" ");
+			    }
 
-				    if (SPdata.searchMode) {
-				    	SP.Keyboard.keyPressedSearchMode(spritesKey);
-				    } else {
-				    	SP.Keyboard.keyPressed(spritesKey);
-				    }
+			    if (SPdata.searchMode) {
+			    	SP.Keyboard.keyPressedSearchMode(spritesKey);
+			    } else {
+			    	SP.Keyboard.keyPressed(spritesKey);
+			    }
 
-				}
 			}
+			
 		}
 
 	}
@@ -252,6 +250,22 @@ SP.Keymapping.initSpritesKeymapping();
 	      }
 		}
 
+		return key;
+	}
+
+
+	// -----------------------------------------------
+	// handleKeyDown
+	// -----------------------------------------------
+	// handle when the key is down
+	// "shift", "alt", "ctrl" are ignored as long as 
+	// 1. other keys are pressed
+	// 2. those keys are released
+	function handleKeyDown(e) {
+
+		// get key string
+		let keyString = getKeyString(e);
+
 		let appv = parseInt(navigator.appVersion);
 	    if(appv>3) {
 
@@ -269,34 +283,25 @@ SP.Keymapping.initSpritesKeymapping();
 
 	    let string = "";
 
-	    if((SPdata.ctrlPressed) && key != "ctrl") {
+	    if((SPdata.ctrlPressed) && keyString != "ctrl") {
 	      string += "ctrl ";
 	    }
-	    if((SPdata.altPressed) && key != "alt") {
+	    if((SPdata.altPressed) && keyString != "alt") {
 	      string += "alt ";
 	    }
-	    if((SPdata.shiftPressed) && key != "shift") {
+	    if((SPdata.shiftPressed) && keyString != "shift") {
 	      string += "shift ";
 	    }
 
-	    if(key && key != "" && (key != "ctrl" && key != "alt" && key != "shift")) {
-	      string += key;
+	    if(keyString && keyString != "") {
+	      string += keyString;
 	    }
 
-	    key = string.toLowerCase();
+	    keyString = string.toLowerCase();
 
-		return key;
-	}
-
-
-	// -----------------------------------------------
-	// handleKeyDown
-	// -----------------------------------------------
-	// handle when the key is down
-	// "shift", "alt", "ctrl" are ignored as long as 
-	// 1. other keys are pressed
-	// 2. those keys are released
-	function handleKeyDown(keyString) {
+		if(keyString != "shift" && keyString != "alt" && keyString != "ctrl") {
+			readKeyInput(e, keyString);
+		}
 
 	} 
 
@@ -305,7 +310,17 @@ SP.Keymapping.initSpritesKeymapping();
 	// handleKeyReleased
 	// -----------------------------------------------
 	// only reacts when "shift", "alt", "ctrl" is released
-	function handleKeyReleased(keyString) {
+	function handleKeyReleased(e) {
+
+		// get key string
+		let keyString = getKeyString(e);
+
+		if(keyString == "shift" || keyString == "alt" || keyString == "ctrl") {
+			SPdata.shiftPressed = e.shiftKey;
+	        SPdata.altPressed   = e.altKey;
+	        SPdata.ctrlPressed  = e.ctrlKey;
+			readKeyInput(e, keyString);
+		}
 
 	}
 
