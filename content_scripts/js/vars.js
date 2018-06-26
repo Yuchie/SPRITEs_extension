@@ -58,5 +58,10 @@ class SPclass {
 		this.prevMenuIndex = [0, 0, 0, 0];
 		this.pagescroll = [0, 0, 0, 0];
 		this.menuscroll = [0, 0, 0, 0];
+
+		// used for shortcut key
+		this.shiftPressed = false;
+		this.altPressed = false;
+		this.ctrlPressed = false; 
 	}
 };
