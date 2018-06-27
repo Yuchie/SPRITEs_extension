@@ -12,7 +12,16 @@ SP.Node = {
 			if(narrateText) {
 				SP.Sound.narrate(narrateText);
 			} else {
-				SP.Sound.narrate(nextNode.textContent);
+				let narrateText;
+				switch(nextNode.tagName.toLowerCase()) {
+					case "a":
+						narrateText = "link " + nextNode.textContent;
+						break;
+					default:
+						narrateText = nextNode.textContent;
+						break;
+				}
+				SP.Sound.narrate(narrateText);
 			}
 			this.highlightNode(nextNode);
 		}
@@ -31,6 +40,7 @@ SP.Node = {
 		// update the current node and highlight it
 		SPdata.currentNode = nextNode;
 	    SPdata.currentNode.focus();
+	    console.log(SPdata.currentNode);
 	    SPdata.currentNode.classList.add('sphighlight');
 	}
 };

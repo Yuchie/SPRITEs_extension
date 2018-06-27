@@ -104,7 +104,7 @@ SP.Webparser = {
 		for (let i=0; i<sublists.length; i++) {
 			sublist = sublists[i];
 			if (sublist.tagName == "LI") {
-				let subsublists = sublist.querySelectorAll('ul, ol');
+				let subsublists = sublist.children;
 				if (subsublists.length) {
 					let subsubHeadingCount = 1;
 					for (let j=0; j<subsublists.length; j++) {
@@ -117,6 +117,10 @@ SP.Webparser = {
 							dic[subHeadingCount][subsubHeadingCount] = subsublist;
 						}
 						subsubHeadingCount += 1;
+					}
+					// if there's only one element
+					if (Object.keys(dic[subHeadingCount]).length == 1) {
+						dic[subHeadingCount] = dic[subHeadingCount][1];
 					}
 				} else {
 					dic[subHeadingCount] = sublist;
@@ -154,12 +158,22 @@ SP.Webparser = {
 						pageDic_t[headerCount][2][0] = title;
 						delete pageDic_t[headerCount+1];
 					}
-					headerCount += 1;
+					// if no element is inside then, delete
+					if (Object.keys(pageDic_t[headerCount][2]).length == 0) {
+						delete pageDic_t[headerCount];
+					} else {
+						headerCount += 1;
+					}
 				} else if (name == "table"){
 					//if the element is table
 					pageDic_t[headerCount] = ['table', list, {}]
 					pageDic_t[headerCount][2] = SP.Webparser.createTable(list);
-					headerCount = headerCount + 1;
+					// if no element is inside then, delete
+					if (Object.keys(pageDic_t[headerCount][2]).length == 0) {
+						delete pageDic_t[headerCount];
+					} else {
+						headerCount += 1;
+					}
 				} else if (name == "p"){
 					if(list.textContent.trim()){
 						let linkList = Array.from(list.getElementsByTagName("a"));

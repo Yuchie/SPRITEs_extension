@@ -132,8 +132,19 @@ SP.Keymapping.initSpritesKeymapping();
 			    	SP.Keyboard.keyPressed(spritesKey);
 			    }
 
+			}	
+		} else {
+			switch(keyString) {
+				case "enter":
+					if (SPdata.currentNode) {
+						if (SPdata.currentNode.tagName.toLowerCase() == "a") {
+							window.location.href = SPdata.currentNode.href;
+						}
+					}
+					break;
+				default:
+					break;
 			}
-			
 		}
 
 	}
