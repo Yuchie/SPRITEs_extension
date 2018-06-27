@@ -41,7 +41,24 @@ SP.Webparser = {
 								// skip to the first available column value
 								colCount += 1;
 							}
-							dic[rowCount][colCount] = temp;
+
+							let subtemplists = temp.children;
+							dic[rowCount][colCount] = {};
+							if (subtemplists.length) {
+								let subtempHeadingCount = 1;
+								for (let j=0; j<subtemplists.length; j++) {
+									let subtemplist = subtemplists[j];
+									dic[rowCount][colCount][subtempHeadingCount] = subtemplist;
+									subtempHeadingCount += 1;
+								}
+								// if there's only one element
+								if (Object.keys(dic[rowCount][colCount]).length == 1) {
+									dic[rowCount][colCount] = dic[rowCount][colCount][1];
+								}
+							} else {
+								dic[rowCount][colCount] = temp;
+							}
+
 							let colspan = parseInt(sublist.colSpan);
 							if(!colspan) {
 								colspan = 1;
@@ -105,11 +122,11 @@ SP.Webparser = {
 			sublist = sublists[i];
 			if (sublist.tagName == "LI") {
 				let subsublists = sublist.children;
+				dic[subHeadingCount] = {};
 				if (subsublists.length) {
 					let subsubHeadingCount = 1;
 					for (let j=0; j<subsublists.length; j++) {
 						let subsublist = subsublists[j];
-						dic[subHeadingCount] = {};
 						if (subsublist.tagName == "UL" || subsublist.tagName == "OL") {
 							//recursive funvtion for submenu
 							dic[subHeadingCount][subsubHeadingCount] = SP.Webparser.createMenu(subsublist);
