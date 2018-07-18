@@ -131,7 +131,12 @@ SP.Webparser = {
 							//recursive funvtion for submenu
 							dic[subHeadingCount][subsubHeadingCount] = SP.Webparser.createMenu(subsublist);
 						} else {
-							dic[subHeadingCount][subsubHeadingCount] = subsublist;
+							if (subsublist.children > 0) {
+								dic[subHeadingCount][subsubHeadingCount] = this.createDictFromList(subsublist);
+							} else {
+								dic[subHeadingCount][subsubHeadingCount] = subsublist;
+							}
+							console.log(dic[subHeadingCount][subsubHeadingCount]);
 						}
 						subsubHeadingCount += 1;
 					}
@@ -152,7 +157,7 @@ SP.Webparser = {
 	createDictFromList: function (lists, menu = null) {
 		// TODO: how to deal with input and button, form
 		// link, the text in the div with other children node
-		let invalid_tags = ['b', 'i', 'u', 'div'];
+		let invalid_tags = ['b', 'i', 'u', 'div', 'section', 'article'];
 		pageDic_t = {};
 		headerCount = 1;
 		while (lists.length) {
@@ -211,6 +216,11 @@ SP.Webparser = {
 								headerCount += 1;
 							}
 						}
+					// } else {
+					// 	let text = list.textContent;
+					// 	if (text.trim()) {
+					// 		pageDic_t[headerCount]
+					// 	}
 					}
 				}
 			}
