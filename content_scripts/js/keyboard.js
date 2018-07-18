@@ -118,6 +118,14 @@ SP.Keyboard = {
 	    	if(region == 2) {
 	    		let index = 0;
 
+	    		// init all the mode and scroll used for other than browsing
+				for (let i=1; i<SPdata.activatedIndex.length; i++) {
+					SPdata.activatedIndex[i] = 0;
+				}
+				for (let i=2; i<curScroll.length; i++) {
+					curScroll[i] = 0;
+				}
+
 	    		// update the curDic to the current menubar
 	    		// TODO: what if the region is more than 3, so menubar has menubar inside
 	    		// the case the list is link. How to click link?
@@ -144,6 +152,11 @@ SP.Keyboard = {
 
 				} else {
 					index = curScroll[1]*region_num[region]+keyNum;
+					if (prevIndex[1] == index) {
+	    				// if pressed the twice, the element is activated
+	    				SPdata.activatedIndex[1] = index;
+	    				activated = true;
+	    			}
 	    			nextNodeList = curDic[index];
 
 	    			if(!nextNodeList) {
@@ -153,6 +166,46 @@ SP.Keyboard = {
 
     			for(let i=0; i<prevIndex.length; i++) {
 	    			if(i == 1) {
+	    				prevIndex[i] = index;
+	    			} else {
+	    				prevIndex[i] = 0;
+	    			}
+	    		}
+	    	} else if (region == 3 && SPdata.activatedIndex[1] != 0) {
+	    		let index = 0;
+	    		// update curDic to current menubar
+	    		curDic = curDic[SPdata.activatedIndex[0]][2][SPdata.activatedIndex[1]][2];
+
+	    		// first and last keyNum is used for scrolling
+	    		if(keyNum == 0) {
+	    			curScroll[2] -= 1;
+			        if (curScroll[2] >= 0) {
+			          	narrateText = "previous set of elements selected";
+			        } else {
+			          	narrateText = "This is the top";
+			          	curScroll[2] += 1;
+			        }
+	    		} else if(keyNum > region_num[region]) {
+	    			curScroll[2] += 1;
+	    			//check whether there's space remain in that level
+					if (curScroll[2] < Object.keys(curDic).length/region_num[region]) {
+						narrateText = "next set of elements selected";
+					} else {
+						narrateText = "This is the last";
+						curScroll[2] -= 1;
+					}
+
+				} else {
+					index = curScroll[2]*region_num[region]+keyNum;
+	    			nextNodeList = curDic[index];
+
+	    			if(!nextNodeList) {
+	    				narrateText = "No element exists";
+	    			}
+				}
+
+    			for(let i=0; i<prevIndex.length; i++) {
+	    			if(i == 2) {
 	    				prevIndex[i] = index;
 	    			} else {
 	    				prevIndex[i] = 0;
@@ -275,6 +328,7 @@ SP.Keyboard = {
 	    	SPdata.pagescroll = curScroll;
 	    }
 
+	    console.log(nextNodeList);
 	    if(nextNodeList) {
 	    	if(nextNodeList.length > 1) {
 	    		nextNode = nextNodeList[1];

@@ -129,13 +129,16 @@ SP.Webparser = {
 						let subsublist = subsublists[j];
 						if (subsublist.tagName == "UL" || subsublist.tagName == "OL") {
 							//recursive funvtion for submenu
+							dic[subHeadingCount][subsubHeadingCount] = ['menubar', subsublist, {}];
 							dic[subHeadingCount][subsubHeadingCount] = SP.Webparser.createMenu(subsublist);
 						} else {
 							dic[subHeadingCount][subsubHeadingCount] = this.createDictFromList([subsublist]);
 							if(Object.keys(dic[subHeadingCount][subsubHeadingCount]).length == 1) {
 								dic[subHeadingCount][subsubHeadingCount] = dic[subHeadingCount][subsubHeadingCount][1];
 							} else {
-								dic[subHeadingCount][subsubHeadingCount][0] = "menubar";
+								let temp = dic[subHeadingCount][subsubHeadingCount];
+								dic[subHeadingCount][subsubHeadingCount] = ["menubar", subsublist, {}];
+								dic[subHeadingCount][subsubHeadingCount][2] = temp;
 							}
 						}
 						subsubHeadingCount += 1;
@@ -152,8 +155,6 @@ SP.Webparser = {
 				}
 			}
 		}
-		console.log("result: ");
-		console.log(dic);
 		return dic;
 	},
 
