@@ -49,7 +49,7 @@ class SPclass {
 		this.keywordInputMode = false;
 		this.keyword = ""; // this must be always stored in lower case
 
-		this.menubar = false;
+		this.list = false;
 		this.table = false;
 		this.paragraph = false;
 

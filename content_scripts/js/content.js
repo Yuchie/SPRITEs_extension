@@ -166,7 +166,7 @@ SP.Keymapping.initSpritesKeymapping();
 				SPdata.searchMode = !SPdata.searchMode;
 				// initialize valuables
 				SPdata.activatedIndex = [0, 0, 0, 0];
-	    		SPdata.menubar = false;
+	    		SPdata.list = false;
 	    		SPdata.table = false;
 	    		SPdata.paragraph = false;
 				chrome.runtime.sendMessage({"message": "switchSearchMode", "from": "content"});

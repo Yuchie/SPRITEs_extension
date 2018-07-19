@@ -111,8 +111,8 @@ SP.Webparser = {
 		return dic;
 	},
 
-	//create menu list
-	createMenu: function(list) {
+	//create list
+	createList: function(list) {
 		let invalid_tags = ['B', 'I', 'U', 'DIV'];
 		let subHeadingCount = 1;
 		let dic = {};
@@ -128,16 +128,16 @@ SP.Webparser = {
 					for (let j=0; j<subsublists.length; j++) {
 						let subsublist = subsublists[j];
 						if (subsublist.tagName == "UL" || subsublist.tagName == "OL") {
-							//recursive funvtion for submenu
-							dic[subHeadingCount][subsubHeadingCount] = ['menubar', subsublist, {}];
-							dic[subHeadingCount][subsubHeadingCount] = SP.Webparser.createMenu(subsublist);
+							//recursive funvtion for sublist
+							dic[subHeadingCount][subsubHeadingCount] = ['list', subsublist, {}];
+							dic[subHeadingCount][subsubHeadingCount] = SP.Webparser.createList(subsublist);
 						} else {
 							dic[subHeadingCount][subsubHeadingCount] = this.createDictFromList([subsublist]);
 							if(Object.keys(dic[subHeadingCount][subsubHeadingCount]).length == 1) {
 								dic[subHeadingCount][subsubHeadingCount] = dic[subHeadingCount][subsubHeadingCount][1];
 							} else {
 								let temp = dic[subHeadingCount][subsubHeadingCount];
-								dic[subHeadingCount][subsubHeadingCount] = ["menubar", subsublist, {}];
+								dic[subHeadingCount][subsubHeadingCount] = ['list', subsublist, {}];
 								dic[subHeadingCount][subsubHeadingCount][2] = temp;
 							}
 						}
@@ -175,9 +175,9 @@ SP.Webparser = {
 					headerCount += 1;
 				} else if (name == "ul" || name == "ol"){
 					// if the element is list
-					pageDic_t[headerCount] = ['menubar', list, {}]
-					pageDic_t[headerCount][2] = SP.Webparser.createMenu(list);
-					// if the element before menubar is header in menuDic, regard this as a title
+					pageDic_t[headerCount] = ['list', list, {}]
+					pageDic_t[headerCount][2] = SP.Webparser.createList(list);
+					// if the element before list is header in menuDic, regard this as a title
 					if(pageDic_t[headerCount-1][0] == 'header' && menu){
 						headerCount--;
 						let title = pageDic_t[headerCount][1].textContent;

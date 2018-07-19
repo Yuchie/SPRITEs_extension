@@ -21,7 +21,7 @@ SP.Keyboard = {
 	    	if(SPdata.dicMode != region) {
 	    		SPdata.dicMode = region;
 	    		SPdata.activatedIndex = [0, 0, 0, 0];
-	    		SPdata.menubar = false;
+	    		SPdata.list = false;
 	    		SPdata.table = false;
 	    		SPdata.paragraph = false;
 	    		if(region == -1) {
@@ -58,7 +58,7 @@ SP.Keyboard = {
 	    	if(region == -1 || region == 1) {
 	    		let index = 0;
 	    		// init all the mode and scroll used for other than browsing
-				SPdata.menubar = false;
+				SPdata.list = false;
 				SPdata.table = false;
 				SPdata.paragraph = false;
 				for (let i=1; i<SPdata.activatedIndex.length; i++) {
@@ -112,9 +112,9 @@ SP.Keyboard = {
 
 
 	    // ----------------------------------------
-	    // menubar mode & paragraph mode
+	    // list mode & paragraph mode
 	    // ----------------------------------------
-	    if(SPdata.menubar || SPdata.paragraph) {
+	    if(SPdata.list || SPdata.paragraph) {
 	    	if(region == 2) {
 	    		let index = 0;
 
@@ -126,8 +126,8 @@ SP.Keyboard = {
 					curScroll[i] = 0;
 				}
 
-	    		// update the curDic to the current menubar
-	    		// TODO: what if the region is more than 3, so menubar has menubar inside
+	    		// update the curDic to the current list
+	    		// TODO: what if the region is more than 3, so list has list inside
 	    		// the case the list is link. How to click link?
 	    		curDic = curDic[SPdata.activatedIndex[0]][2];
 
@@ -173,7 +173,7 @@ SP.Keyboard = {
 	    		}
 	    	} else if (region == 3 && SPdata.activatedIndex[1] != 0) {
 	    		let index = 0;
-	    		// update curDic to current menubar
+	    		// update curDic to current list
 	    		curDic = curDic[SPdata.activatedIndex[0]][2][SPdata.activatedIndex[1]][2];
 
 	    		// first and last keyNum is used for scrolling
@@ -224,7 +224,7 @@ SP.Keyboard = {
 	    	if(region == 0) {
 	    		let index = 0;
 
-	    		// update the curDic to the current menubar
+	    		// update the curDic to the current list
 	    		curDic = curDic[SPdata.activatedIndex[0]][2];
 
 	    		// first and last keyNum is used for scrolling
@@ -275,7 +275,7 @@ SP.Keyboard = {
 	    		// choose row
 	    		let index = 0;
 
-	    		// update the curDic to the current menubar
+	    		// update the curDic to the current list
 	    		curDic = curDic[SPdata.activatedIndex[0]][2][SPdata.activatedIndex[1]];
 
 	    		// first and last keyNum is used for scrolling
@@ -337,13 +337,13 @@ SP.Keyboard = {
 			    		let headNum = nextNode.tagName[1];
 			    		narrateText = 'heading' + headNum + ' ' + nextNode.textContent;
 		    			break;
-		    		case 'menubar':
+		    		case 'list':
 		    			if(activated) {
-		    				SPdata.menubar = true;
-		    				narrateText = 'menubar activated';
+		    				SPdata.list = true;
+		    				narrateText = 'list activated';
 		    			} else {
 			    			let length = Object.keys(nextNodeList[2]).length;
-			    			narrateText = 'menubar with ' + length + ' items';
+			    			narrateText = 'list with ' + length + ' items';
 			    			if(nextNodeList[2][0]) {
 			    				let title = nextNodeList[2][0];
 			    				narrateText = title + ' ' + narrateText;
@@ -405,7 +405,7 @@ SP.Keyboard = {
 	    	if(SPdata.dicMode != region) {
 	    		SPdata.dicMode = region;
 	    		SPdata.activatedIndex = [0, 0, 0, 0];
-	    		SPdata.menubar = false;
+	    		SPdata.list = false;
 	    		SPdata.table = false;
 	    		SPdata.paragraph = false;
 	    		if(region == -1) {
@@ -446,7 +446,7 @@ SP.Keyboard = {
 	    	if(region == -1 || region == 1) {
 	    		let index = 0;
 	    		// init all the mode and scroll used for other than browsing
-				SPdata.menubar = false;
+				SPdata.list = false;
 				SPdata.table = false;
 				SPdata.paragraph = false;
 				for (let i=1; i<SPdata.activatedIndex.length; i++) {
@@ -502,14 +502,14 @@ SP.Keyboard = {
 
 
 	    // ----------------------------------------
-	    // menubar mode
+	    // list mode
 	    // ----------------------------------------
-	    if(SPdata.menubar) {
+	    if(SPdata.list) {
 	    	if(region == 2) {
 	    		let index = 0;
 
-	    		// update the curDic to the current menubar
-	    		// TODO: what if the region is more than 3, so menubar has menubar inside
+	    		// update the curDic to the current list
+	    		// TODO: what if the region is more than 3, so list has list inside
 	    		// the case the list is link. How to click link?
 	    		curDic = curDic[searchDic[SPdata.activatedIndex[0]][0]][2];
 	    		searchDic = searchDic[SPdata.activatedIndex[0]][2];
@@ -571,7 +571,7 @@ SP.Keyboard = {
 	    	if(region == 0) {
 	    		let index = 0;
 
-	    		// update the curDic to the current menubar
+	    		// update the curDic to the current list
 	    		curDic = curDic[searchDic[SPdata.activatedIndex[0]][0]][2];
 	    		searchDic = searchDic[SPdata.activatedIndex[0]][2];
 
@@ -635,7 +635,7 @@ SP.Keyboard = {
 	    		// choose row
 	    		let index = 0;
 
-	    		// update the curDic to the current menubar
+	    		// update the curDic to the current list
 	    		curDic = curDic[searchDic[SPdata.activatedIndex[0]][0]][2][SPdata.activatedIndex[1]];
 	    		searchDic = searchDic[SPdata.activatedIndex[0]][2];
 
@@ -726,10 +726,10 @@ SP.Keyboard = {
 				    		let headNum = nextNode.tagName[1];
 				    		narrateText = 'heading' + headNum + ' ' + nextNode.textContent;
 			    			break;
-			    		case 'menubar':
-		    				SPdata.menubar = true;
+			    		case 'list':
+		    				SPdata.list = true;
 		    				let length = Object.keys(nextNodeList[2]).length;
-		    				narrateText = 'menubar with ' + length + ' items activated';
+		    				narrateText = 'list with ' + length + ' items activated';
 		    				if(nextNodeList[2][0]) {
 			    				let title = nextNodeList[2][0];
 			    				narrateText = title + ' ' + narrateText;
@@ -868,23 +868,23 @@ SP.Keyboard = {
 
 
 	// ----------------------------------------------------
-	// menuSearch function
+	// listSearch function
 	// ----------------------------------------------------
-	// Search the menu whether the specific tuple has the keyword.
+	// Search the list whether the specific tuple has the keyword.
 	// The occurence and the array of index is returned
-	menuSearch: function(menubar, keyword) {
+	listSearch: function(list, keyword) {
 
 		let totalOccurence = 0;
 		let searchResultIndex = {};
 
 		// TODO: whether include title or not
-		for (let i=0; i<=Object.keys(menubar).length; i++) {
-			if(menubar[i]) {
+		for (let i=0; i<=Object.keys(list).length; i++) {
+			if(list[i]) {
 				let text;
 				if (i == 0) {
-					text = menubar[i];
+					text = list[i];
 				} else {
-					text = menubar[i].textContent;
+					text = list[i].textContent;
 				}
 				let occurence = ((text.toLowerCase()).match(new RegExp(keyword, 'gi')) || []).length;
 				searchResultIndex[i] = occurence;
@@ -952,12 +952,12 @@ SP.Keyboard = {
 						headerCount++;
 					}
 					break;
-				case 'menubar':
-					let menuResult = this.menuSearch(subDic[2], keyword);
-					let menuResultDic = menuResult[1];
-					occurence = menuResult[0];
+				case 'list':
+					let listResult = this.listSearch(subDic[2], keyword);
+					let listResultDic = listResult[1];
+					occurence = listResult[0];
 					if (occurence) {
-						resultDic_t[headerCount] = [i, occurence, menuResultDic];
+						resultDic_t[headerCount] = [i, occurence, listResultDic];
 						headerCount++;
 					}
 					break;
