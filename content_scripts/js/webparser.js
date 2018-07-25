@@ -208,6 +208,10 @@ SP.Webparser = {
 						pageDic_t[headerCount] = ['paragraph', list, linkList];
 						headerCount += 1;
 					}
+				} else if (name == "img"){
+					//if the element is image
+					pageDic_t[headerCount] = ['image', list];
+					headerCount += 1;
 				} else {
 					if (invalid_tags.indexOf(name) >=  0) {
 						let list_tmp = list.children;

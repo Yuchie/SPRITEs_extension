@@ -367,6 +367,13 @@ SP.Keyboard = {
 		    				narrateText = 'paragraph activated';
 		    			}
 		    			break;
+		    		case 'image':
+		    			let alt = nextNode.alt;
+		    			narrateText = 'image';
+		    			if (alt != null) {
+		    				narrateText += ' of ' + alt;
+		    			}
+		    			break;
 		    		case 'textblock':
 		    			break;
 		    		default:
