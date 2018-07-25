@@ -24,6 +24,7 @@ SP.Keyboard = {
 	    		SPdata.list = false;
 	    		SPdata.table = false;
 	    		SPdata.paragraph = false;
+	    		SPdata.textblock = false;
 	    		if(region == -1) {
 	    			SPdata.prevMenuIndex = [0, 0, 0, 0];
 	    		} else if (region == 1) {
@@ -61,6 +62,7 @@ SP.Keyboard = {
 				SPdata.list = false;
 				SPdata.table = false;
 				SPdata.paragraph = false;
+				SPdata.textblock = false;
 				for (let i=1; i<SPdata.activatedIndex.length; i++) {
 					SPdata.activatedIndex[i] = 0;
 				}
@@ -112,9 +114,9 @@ SP.Keyboard = {
 
 
 	    // ----------------------------------------
-	    // list mode & paragraph mode
+	    // list mode & paragraph mode & textblock mode
 	    // ----------------------------------------
-	    if(SPdata.list || SPdata.paragraph) {
+	    if(SPdata.list || SPdata.paragraph || SPdata.textblock) {
 	    	if(region == 2) {
 	    		let index = 0;
 
@@ -375,6 +377,10 @@ SP.Keyboard = {
 		    			}
 		    			break;
 		    		case 'textblock':
+		    			if(activated) {
+		    				SPdata.textblock = true;
+		    				narrateText = 'textblock activated';
+		    			}
 		    			break;
 		    		default:
 		    			console.log("unexpected web element in dic");
@@ -415,6 +421,7 @@ SP.Keyboard = {
 	    		SPdata.list = false;
 	    		SPdata.table = false;
 	    		SPdata.paragraph = false;
+	    		SPdata.textblock = false;
 	    		if(region == -1) {
 	    			SPdata.prevMenuIndex = [0, 0, 0, 0];
 	    		} else if (region == 1) {
@@ -456,6 +463,7 @@ SP.Keyboard = {
 				SPdata.list = false;
 				SPdata.table = false;
 				SPdata.paragraph = false;
+				SPdata.textblock = false;
 				for (let i=1; i<SPdata.activatedIndex.length; i++) {
 					SPdata.activatedIndex[i] = 0;
 				}

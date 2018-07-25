@@ -162,7 +162,8 @@ SP.Webparser = {
 	createDictFromList: function (lists, menu = null) {
 		// TODO: how to deal with input and button, form
 		// link, the text in the div with other children node
-		let invalid_tags = ['b', 'i', 'u', 'div', 'section', 'article', 'a'];
+		let invalid_tags = ['b', 'i', 'u', 'div', 'section', 'article', 'a', 'span'];
+		let invalid_text_tags = ['b', 'i', 'u', 'a', 'span'];
 		let pageDic_t = {};
 		let headerCount = 1;
 		while (lists.length) {
@@ -178,12 +179,14 @@ SP.Webparser = {
 					pageDic_t[headerCount] = ['list', list, {}]
 					pageDic_t[headerCount][2] = SP.Webparser.createList(list);
 					// if the element before list is header in menuDic, regard this as a title
-					if(pageDic_t[headerCount-1][0] == 'header' && menu){
-						headerCount--;
-						let title = pageDic_t[headerCount][1].textContent;
-						pageDic_t[headerCount] = pageDic_t[headerCount+1];
-						pageDic_t[headerCount][2][0] = title;
-						delete pageDic_t[headerCount+1];
+					if (headerCount > 1) {
+						if(pageDic_t[headerCount-1][0] == 'header' && menu){
+							headerCount--;
+							let title = pageDic_t[headerCount][1].textContent;
+							pageDic_t[headerCount] = pageDic_t[headerCount+1];
+							pageDic_t[headerCount][2][0] = title;
+							delete pageDic_t[headerCount+1];
+						}
 					}
 					// if no element is inside then, delete
 					if (Object.keys(pageDic_t[headerCount][2]).length == 0) {
@@ -214,14 +217,43 @@ SP.Webparser = {
 					headerCount += 1;
 				} else {
 					if (invalid_tags.indexOf(name) >=  0) {
-						let list_tmp = list.children;
-						if(list_tmp.length) {
-							list_tmp = Array.from(list_tmp);
-							lists = list_tmp.concat(lists);
+						let lists_tmp = list.children;
+						if(lists_tmp.length) {
+							let lists_tmp_tmp = Array.from(lists_tmp);
+							let all = true;
+
+							while (lists_tmp_tmp.length) {
+								let list_tmp_tmp = lists_tmp_tmp.shift();
+								let name_tmp = list_tmp_tmp.tagName.toLowerCase();
+								if (invalid_text_tags.indexOf(name_tmp) < 0) {
+									if (invalid_tags.indexOf(name_tmp) >= 0 && list_tmp_tmp.children.length) {
+										lists_tmp_tmp = (Array.from(list_tmp_tmp.children)).concat(lists_tmp_tmp);
+									} else {
+										all = false;
+										break;
+									}
+								}
+							}
+							
+							if (all) {
+								let text = list.innerText;
+								if (text.trim()) {
+									let linkList = Array.from(list.getElementsByTagName("a"));
+									linkList.unshift(null); // make it starts from 1
+									pageDic_t[headerCount] = ['textblock', list, linkList]; // TODO: list.textContent or list?
+									headerCount += 1;
+								}
+							} else {
+								console.log(lists_tmp);
+								lists = (Array.from(lists_tmp)).concat(lists);
+							}
+
 						} else {
-							let text = list.textContent;
+							let text = list.innerText;
 							if (text.trim()) {
-								pageDic_t[headerCount] = ['textblock', list]; // TODO: list.textContent or list?
+								let linkList = Array.from(list.getElementsByTagName("a"));
+								linkList.unshift(null); // make it starts from 1
+								pageDic_t[headerCount] = ['textblock', list, linkList]; // TODO: list.textContent or list?
 								headerCount += 1;
 							}
 						}

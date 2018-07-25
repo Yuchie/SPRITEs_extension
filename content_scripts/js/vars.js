@@ -52,6 +52,7 @@ class SPclass {
 		this.list = false;
 		this.table = false;
 		this.paragraph = false;
+		this.textblock = false;
 
 		this.activatedIndex = [0, 0, 0, 0];
 		this.prevPageIndex = [0, 0, 0, 0];
