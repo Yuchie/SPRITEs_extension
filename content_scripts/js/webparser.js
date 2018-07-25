@@ -215,6 +215,14 @@ SP.Webparser = {
 					//if the element is image
 					pageDic_t[headerCount] = ['image', list];
 					headerCount += 1;
+				} else if (name == "input"){
+					//if the element is input
+					pageDic_t[headerCount] = ['input', list];
+					headerCount += 1;
+				} else if (name == "button") {
+					//if the element is button
+					pageDic_t[headerCount] = ['button', list];
+					headerCount += 1;
 				} else {
 					if (invalid_tags.indexOf(name) >=  0) {
 						let lists_tmp = list.children;
@@ -244,7 +252,6 @@ SP.Webparser = {
 									headerCount += 1;
 								}
 							} else {
-								console.log(lists_tmp);
 								lists = (Array.from(lists_tmp)).concat(lists);
 							}
 
@@ -257,11 +264,11 @@ SP.Webparser = {
 								headerCount += 1;
 							}
 						}
-					// } else {
-					// 	let text = list.textContent;
-					// 	if (text.trim()) {
-					// 		pageDic_t[headerCount]
-					// 	}
+					} else {
+						let lists_tmp = list.children;
+						if(lists_tmp.length) {
+							lists = (Array.from(lists_tmp)).concat(lists);
+						}
 					}
 				}
 			}

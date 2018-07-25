@@ -376,6 +376,15 @@ SP.Keyboard = {
 		    				narrateText += ' of ' + alt;
 		    			}
 		    			break;
+		    		case 'input':
+		    			narrateText = "input field";
+		    			break;
+		    		case 'button':
+		    			narrateText = "button";
+		    			if (nextNode.innerText) {
+		    				narrateText = nextNode.innerText + " " + narrateText;
+		    			}
+		    			break;
 		    		case 'textblock':
 		    			if(activated) {
 		    				SPdata.textblock = true;
@@ -761,6 +770,12 @@ SP.Keyboard = {
 			    			break;
 			    		case 'textblock':
 			    			break;
+			    		case 'image':
+			    			break;
+			    		case 'input':
+			    			break;
+			    		case 'button':
+			    			break;
 			    		default:
 			    			console.log("unexpected web element in dic");
 			    			break;
@@ -993,6 +1008,22 @@ SP.Keyboard = {
 					}
 					break;
 				case 'textblock':
+					occurence = ((content.innerText.toLowerCase()).match(new RegExp(keyword, 'gi')) || []).length;
+					if (occurence) {
+						resultDic_t[headerCount] = [i, occurence];
+						headerCount++;
+					}
+					break;
+				case 'image':
+					break;
+				case 'input':
+					occurence = ((content.innerText.toLowerCase()).match(new RegExp(keyword, 'gi')) || []).length;
+					if (occurence) {
+						resultDic_t[headerCount] = [i, occurence];
+						headerCount++;
+					}
+					break;
+				case 'button':
 					occurence = ((content.innerText.toLowerCase()).match(new RegExp(keyword, 'gi')) || []).length;
 					if (occurence) {
 						resultDic_t[headerCount] = [i, occurence];
